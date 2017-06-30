@@ -3,6 +3,8 @@ GenisysPlus
 
 __这是用于我的世界便携版和我的世界windows10版的服务器__
 
+![Image text](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Logo.bmp)
+
 The Minecraft: Pocket Edition server written in PHP language 
 
 特点
