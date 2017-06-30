@@ -15,7 +15,9 @@ The Minecraft: Pocket Edition server written in PHP language
 * 支持双持
 兼容性好
 * 从1.12.0~4.0.0的API全支持
+
 支持资源包!
+
 中文的高级配置文件！
 
 未来会加入的东西
