@@ -41,11 +41,17 @@ The Minecraft: Pocket Edition server written in PHP language
 
 PHP运行环境下载
 -------------
+我推荐使用iTX Technologies团队的(￣▽￣)"
+
 Windows:
+
  64位系统
-* [7.0.14版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.14.zip)	[7.0.15版本(13.2MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.15.zip)	[7.0.16版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.16.zip)	[7.0.17版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.17.zip)
+ 
+* [7.0.14版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.14.zip)	      [7.0.15版本(13.2MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.15.zip)	      [7.0.16版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.16.zip)	      [7.0.17版本(13.3MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x64_7.0.17.zip)
+
  32位系统
-* [7.0.14版本(11.4MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.14.zip)	[7.0.15版本(11.4MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.15.zip)	[7.0.16版本(11.5MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.16.zip)	[7.0.17版本(11.5MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.17.zip)
+ 
+* [7.0.14版本(11.4MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.14.zip)	      [7.0.15版本(11.4MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.15.zip)	      [7.0.16版本(11.5MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.16.zip)	      [7.0.17版本(11.5MB)](https://storage.googleapis.com/itx-technologies-141911.appspot.com/php_for_genisys%2Fphp_windows_x86_7.0.17.zip)
 
 Licence
 -------------
