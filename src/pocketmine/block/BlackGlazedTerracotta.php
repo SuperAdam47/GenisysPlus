@@ -21,41 +21,41 @@
 
 namespace pocketmine\block;
 
-use pocketmine\item\Item;
 use pocketmine\item\Tool;
-use pocketmine\Player;
 
-class PurpleGlazedTerracotta extends Solid{
+use pocketmine\Player;
+use pocketmine\item\Item;
+
+class BlackGlazedTerracotta extends Solid{
+
+	protected $id = self::BLACK_GLAZED_TERRACOTTA;
+
+	public function __construct($meta = 0){
+		$this->meta = $meta;
+	}
 
 	public function getHardness(){
 		return 1.4;
 	}
 
+	public function getName(){
+		return "Black Glazed Terracotta";
+	}
+
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
-
+	
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-		if($player !== null){
-			$faces = [
-				0 => 4,
-				1 => 3,
-				2 => 5,
-				3 => 2
-			];
-			$this->meta = $faces[(~($player->getDirection() - 1)) & 0x03];
-		}
+		$faces = [
+			0 => 4,
+			1 => 2,
+			2 => 5,
+			3 => 3,
+		];
+		$this->meta = $faces[$player instanceof Player ? $player->getDirection() : 0];
+		$this->getLevel()->setBlock($block, $this, true, true);
 
-		return $this->getLevel()->setBlock($block, $this, true, true);
-	}
-
-	public function getDrops(Item $item){
-		if($item->isPickaxe() >= Tool::TIER_WOODEN){
-			return [
-				Item::get($this->getId(), 0, 1)
-			];
-		}else{
-			return [];
-		}
+		return true;
 	}
 }
