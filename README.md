@@ -10,17 +10,20 @@ The Minecraft: Pocket Edition server written in PHP language
 
 _欢迎到我们的服务器参观_
 
-* z6mcpe.com        34601
+* z6mcpe.com </br>  34601</br>
 
 _GenisysPlus官方推荐面板_
+--------------------------
 
 ![Yongcheng interconnection](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Yongcheng_interconnection.jpg)
-* 永成互联，E5至强主机。租服赠送插件、地图。采用佛山顺德机房，流畅性与稳定性有着绝对的保证。 *
-* 永成互联客户服务中心： *
-* http://www.amywg.com/index.php/buy/index *
-* 租服请找QQ:1798471966 *
+##永成互联，E5至强主机。租服赠送插件、地图。采用佛山顺德机房，流畅性与稳定性有着绝对的保证。
+##永成互联客户服务中心：
+##http://www.amywg.com/index.php/buy/index
+###不仅仅有面板，还有VPS虚拟空间等。
+###详询QQ:1798471966
 
 _本次更新_
+-----------
 
 GenisysPlus v0.2.3 震撼发布！
 ----------------------------
@@ -39,8 +42,7 @@ GenisysPlus v0.2.3 震撼发布！
 
 
 _版本更新历史_
-
-
+--------------
 GenisysPlus v0.2.2强势插队
 --------------------------
 * 由于上个beta版遗留的Bug有点多，末路之地暂时不加入。
