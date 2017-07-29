@@ -27,8 +27,7 @@ use pocketmine\Player;
 /**
  * Called when a player is awarded an achievement
  */
-class PlayerAchievementAwardedEvent extends PlayerEvent implements Cancellable{
-
+class PlayerAchievementAwardedEvent extends PlayerEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/** @var string */
@@ -43,15 +42,10 @@ class PlayerAchievementAwardedEvent extends PlayerEvent implements Cancellable{
 		$this->achievement = $achievementId;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getAchievement(){
 		return $this->achievement;
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PlayerAchievementAwardedEvent";
-	}
-
 }

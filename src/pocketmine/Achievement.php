@@ -1,21 +1,25 @@
 <?php
 
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
 */
 
@@ -27,7 +31,7 @@ use pocketmine\utils\TextFormat;
 /**
  * Handles the achievement list and a bit more
  */
-abstract class Achievement{
+abstract class Achievement {
 	/**
 	 * @var array[]
 	 */
@@ -105,6 +109,12 @@ abstract class Achievement{
 	];
 
 
+	/**
+	 * @param Player $player
+	 * @param        $achievementId
+	 *
+	 * @return bool
+	 */
 	public static function broadcast(Player $player, $achievementId){
 		if(isset(Achievement::$list[$achievementId])){
 			$translation = new TranslationContainer("chat.type.achievement", [$player->getDisplayName(), TextFormat::GREEN . Achievement::$list[$achievementId]["name"]]);
@@ -120,6 +130,13 @@ abstract class Achievement{
 		return false;
 	}
 
+	/**
+	 * @param       $achievementId
+	 * @param       $achievementName
+	 * @param array $requires
+	 *
+	 * @return bool
+	 */
 	public static function add($achievementId, $achievementName, array $requires = []){
 		if(!isset(Achievement::$list[$achievementId])){
 			Achievement::$list[$achievementId] = [

@@ -17,6 +17,7 @@
  *
  *
 */
+
 namespace pocketmine\inventory;
 
 use pocketmine\event\Timings;
@@ -28,7 +29,7 @@ use pocketmine\utils\Config;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\UUID;
 
-class CraftingManager{
+class CraftingManager {
 	/** @var Recipe[] */
 	public $recipes = [];
 
@@ -46,6 +47,9 @@ class CraftingManager{
 	/** @var CraftingDataPacket */
 	private $craftingDataCache;
 
+	/**
+	 * CraftingManager constructor.
+	 */
 	public function __construct(){
 		$this->registerBrewingStand();
 
@@ -57,30 +61,26 @@ class CraftingManager{
 			switch($recipe["type"]){
 				case 0:
 					// TODO: handle multiple result items
-					if(count($recipe["output"]) === 1){
-						$first = $recipe["output"][0];
-						$result = new ShapelessRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]));
+					$first = $recipe["output"][0];
+					$result = new ShapelessRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]));
 
-						foreach($recipe["input"] as $ingredient){
-							$result->addIngredient(Item::get($ingredient["id"], $ingredient["damage"], $ingredient["count"], $first["nbt"]));
-						}
-						$this->registerRecipe($result);
+					foreach($recipe["input"] as $ingredient){
+						$result->addIngredient(Item::get($ingredient["id"], $ingredient["damage"], $ingredient["count"], $first["nbt"]));
 					}
+					$this->registerRecipe($result);
 					break;
 				case 1:
 					// TODO: handle multiple result items
-					if(count($recipe["output"]) === 1){
-						$first = $recipe["output"][0];
-						$result = new ShapedRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]), $recipe["height"], $recipe["width"]);
+					$first = $recipe["output"][0];
+					$result = new ShapedRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]), $recipe["height"], $recipe["width"]);
 
-						$shape = array_chunk($recipe["input"], $recipe["width"]);
-						foreach($shape as $y => $row){
-							foreach($row as $x => $ingredient){
-								$result->addIngredient($x, $y, Item::get($ingredient["id"], ($ingredient["damage"] < 0 ? -1 : $ingredient["damage"]), $ingredient["count"], $ingredient["nbt"]));
-							}
+					$shape = array_chunk($recipe["input"], $recipe["width"]);
+					foreach($shape as $y => $row){
+						foreach($row as $x => $ingredient){
+							$result->addIngredient($x, $y, Item::get($ingredient["id"], ($ingredient["damage"] < 0 ? -1 : $ingredient["damage"]), $ingredient["count"], $ingredient["nbt"]));
 						}
-						$this->registerRecipe($result);
 					}
+					$this->registerRecipe($result);
 					break;
 				case 2:
 				case 3:
@@ -270,11 +270,17 @@ class CraftingManager{
 		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::INVISIBILITY_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION_T, 1)));
 		//===================================================================分隔符=======================================================================
 		//普通药水升级成喷溅
-		foreach (Potion::POTIONS as $potion => $effect){
+		foreach(Potion::POTIONS as $potion => $effect){
 			$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, $potion, 1), Item::get(Item::GUNPOWDER, 0, 1), Item::get(Item::POTION, $potion, 1)));
 		}
 	}
 
+	/**
+	 * @param Item $i1
+	 * @param Item $i2
+	 *
+	 * @return int
+	 */
 	public function sort(Item $i1, Item $i2){
 		if($i1->getId() > $i2->getId()){
 			return 1;
@@ -295,6 +301,7 @@ class CraftingManager{
 
 	/**
 	 * @param UUID $id
+	 *
 	 * @return Recipe
 	 */
 	public function getRecipe(UUID $id){
@@ -309,9 +316,15 @@ class CraftingManager{
 		return $this->recipes;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
 	public function getRecipesByResult(Item $item){
 		return @array_values($this->recipeLookup[$item->getId() . ":" . $item->getDamage()]) ?? [];
 	}
+
 	/**
 	 * @return FurnaceRecipe[]
 	 */
@@ -341,7 +354,7 @@ class CraftingManager{
 	 * @return BrewingRecipe
 	 */
 	public function matchBrewingRecipe(Item $input, Item $potion){
-		$subscript = $input->getId() . ":" . ($input->getDamage() === null ? "0" : $input->getDamage()) . ":" . $potion->getId() . ":" .($potion->getDamage() === null ? "0" : $potion->getDamage());
+		$subscript = $input->getId() . ":" . ($input->getDamage() === null ? "0" : $input->getDamage()) . ":" . $potion->getId() . ":" . ($potion->getDamage() === null ? "0" : $potion->getDamage());
 		if(isset($this->brewingRecipes[$subscript])){
 			return $this->brewingRecipes[$subscript];
 		}
@@ -400,11 +413,12 @@ class CraftingManager{
 	public function registerBrewingRecipe(BrewingRecipe $recipe){
 		$input = $recipe->getInput();
 		$potion = $recipe->getPotion();
-		$this->brewingRecipes[$input->getId() . ":" . ($input->getDamage() === null ? "0" : $input->getDamage()) . ":" . $potion->getId() . ":" .($potion->getDamage() === null ? "0" : $potion->getDamage())] = $recipe;
+		$this->brewingRecipes[$input->getId() . ":" . ($input->getDamage() === null ? "0" : $input->getDamage()) . ":" . $potion->getId() . ":" . ($potion->getDamage() === null ? "0" : $potion->getDamage())] = $recipe;
 	}
 
 	/**
 	 * @param ShapelessRecipe $recipe
+	 *
 	 * @return bool
 	 */
 	public function matchRecipe(ShapelessRecipe $recipe){

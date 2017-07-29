@@ -1,21 +1,25 @@
 <?php
 
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
 */
 
@@ -27,8 +31,13 @@ use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 
 
-class BanIpCommand extends VanillaCommand{
+class BanIpCommand extends VanillaCommand {
 
+	/**
+	 * BanIpCommand constructor.
+	 *
+	 * @param string $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
@@ -38,6 +47,13 @@ class BanIpCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.ban.ip");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;
@@ -71,6 +87,11 @@ class BanIpCommand extends VanillaCommand{
 		return true;
 	}
 
+	/**
+	 * @param               $ip
+	 * @param CommandSender $sender
+	 * @param               $reason
+	 */
 	private function processIPBan($ip, CommandSender $sender, $reason){
 		$sender->getServer()->getIPBans()->addBan($ip, $reason, null, $sender->getName());
 

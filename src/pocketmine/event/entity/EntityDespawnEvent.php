@@ -31,7 +31,7 @@ use pocketmine\entity\Vehicle;
 /**
  * Called when a entity is despawned
  */
-class EntityDespawnEvent extends EntityEvent{
+class EntityDespawnEvent extends EntityEvent {
 	public static $handlerList = null;
 
 	private $entityType;
@@ -84,13 +84,6 @@ class EntityDespawnEvent extends EntityEvent{
 	 */
 	public function isItem(){
 		return $this->entity instanceof Item;
-	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "EntityDespawnEvent";
 	}
 
 }

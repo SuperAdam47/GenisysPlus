@@ -1,23 +1,27 @@
 <?php
 
 /*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
- */
+*/
 
 namespace pocketmine\command\defaults;
 
@@ -27,8 +31,13 @@ use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 
 
-class BanIpByNameCommand extends VanillaCommand{
+class BanIpByNameCommand extends VanillaCommand {
 
+	/**
+	 * BanIpByNameCommand constructor.
+	 *
+	 * @param string $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
@@ -38,6 +47,13 @@ class BanIpByNameCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.banipbyname");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return \true;
@@ -51,8 +67,8 @@ class BanIpByNameCommand extends VanillaCommand{
 
 		$name = \array_shift($args);
 		$reason = \implode(" ", $args);
-		
-		if ($sender->getServer()->getPlayer($name) instanceof Player) $target = $sender->getServer()->getPlayer($name);
+
+		if($sender->getServer()->getPlayer($name) instanceof Player) $target = $sender->getServer()->getPlayer($name);
 		else return \false;
 
 		$sender->getServer()->getIPBans()->addBan($target->getAddress(), $reason, \null, $sender->getName());

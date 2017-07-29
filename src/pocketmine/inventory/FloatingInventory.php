@@ -15,7 +15,7 @@
  * (at your option) any later version.
  *
  * @author iTX Technologies
- * @link https://itxtech.org
+ * @link   https://itxtech.org
  *
  */
 
@@ -24,12 +24,11 @@ namespace pocketmine\inventory;
 /**
  * The in-between inventory where items involved in transactions are stored temporarily
  */
-class FloatingInventory extends BaseInventory{
+class FloatingInventory extends BaseInventory {
 
-    /**
-     * @param InventoryHolder $holder
-     * @internal param InventoryType $inventoryType
-     */
+	/**
+	 * @param InventoryHolder $holder
+	 */
 	public function __construct(InventoryHolder $holder){
 		parent::__construct($holder, InventoryType::get(InventoryType::PLAYER_FLOATING));
 	}

@@ -32,8 +32,13 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 
-class SummonCommand extends VanillaCommand{
+class SummonCommand extends VanillaCommand {
 
+	/**
+	 * SummonCommand constructor.
+	 *
+	 * @param $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
@@ -43,6 +48,13 @@ class SummonCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.summon");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;
@@ -123,17 +135,17 @@ class SummonCommand extends VanillaCommand{
 		$type = $args[0];
 		$level = ($sender instanceof Player) ? $sender->getLevel() : $sender->getServer()->getDefaultLevel();
 		$nbt = new CompoundTag("", [
-			new ListTag("Pos", [
+			"Pos" => new ListTag("Pos", [
 				new DoubleTag("", $x),
 				new DoubleTag("", $y),
 				new DoubleTag("", $z)
 			]),
-			new ListTag("Motion", [
+			"Motion" => new ListTag("Motion", [
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0)
 			]),
-			new ListTag("Rotation", [
+			"Rotation" => new ListTag("Rotation", [
 				new FloatTag("", lcg_value() * 360),
 				new FloatTag("", 0)
 			]),

@@ -24,7 +24,7 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class PlayerListPacket extends DataPacket{
+class PlayerListPacket extends DataPacket {
 
 	const NETWORK_ID = Info::PLAYER_LIST_PACKET;
 
@@ -36,15 +36,25 @@ class PlayerListPacket extends DataPacket{
 	public $entries = [];
 	public $type;
 
+	/**
+	 * @return $this
+	 */
 	public function clean(){
 		$this->entries = [];
+
 		return parent::clean();
 	}
 
+	/**
+	 *
+	 */
 	public function decode(){
 
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putByte($this->type);
@@ -60,6 +70,13 @@ class PlayerListPacket extends DataPacket{
 				$this->putUUID($d[0]);
 			}
 		}
+	}
+
+	/**
+	 * @return PacketName|string
+	 */
+	public function getName(){
+		return "PlayerListPacket";
 	}
 
 }

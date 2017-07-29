@@ -1,25 +1,23 @@
 <?php
 
- /*
- *  _______                                     ______  _
- * /  ____ \                                   |  __  \| \
- * | |    \_|              _                   | |__| || |
- * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
- * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
- * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
- * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
- *                                   //
- *                                  (_)                Power by:
- *                                                           Tesseract
+/*
+ *
+ *    _______                                _
+ *   |__   __|                              | |
+ *      | | ___  ___ ___  ___ _ __ __ _  ___| |_
+ *      | |/ _ \/ __/ __|/ _ \  __/ _` |/ __| __|
+ *      | |  __/\__ \__ \  __/ | | (_| | (__| |_
+ *      |_|\___||___/___/\___|_|  \__,_|\___|\__|
+ *
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @由Tessetact团队创建，GenisysPlus项目组修改
- * @链接 https://github.com/TesseractTeam
- * @链接 https://github.com/Tcanw/GenisysPlus
+ * @author Tesseract Team
+ * @link DEAD
+ * 
  *
  */
 
@@ -32,17 +30,23 @@ class EnderDragon extends Monster {
 
 	const NETWORK_ID = 53;
 
-	public $dropExp = [500, 12,000];//TODO: Add death animation and exp drop.
+	public $dropExp = [500, 12, 000];//TODO: Add death animation and exp drop.
 
 	public function initEntity(){
 		$this->setMaxHealth(200);
 		parent::initEntity();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Ender Dragon";
 	}
 
+	/**
+	 * @param Player $player
+	 */
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();

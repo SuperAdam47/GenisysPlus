@@ -26,7 +26,7 @@ use pocketmine\event\Cancellable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-abstract class PlayerBucketEvent extends PlayerEvent implements Cancellable{
+abstract class PlayerBucketEvent extends PlayerEvent implements Cancellable {
 
 	/** @var Block */
 	private $blockClicked;
@@ -90,12 +90,4 @@ abstract class PlayerBucketEvent extends PlayerEvent implements Cancellable{
 	public function getBlockFace(){
 		return $this->blockFace;
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PlayerBucketEvent";
-	}
-
 }

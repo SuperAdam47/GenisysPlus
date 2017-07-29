@@ -2,7 +2,7 @@
 
 /*
  * PocketMine Standard PHP Library
- * Copyright (C) 2014-2016 PocketMine Team <https://github.com/PocketMine/PocketMine-SPL>
+ * Copyright (C) 2014-2017 PocketMine Team <https://github.com/PocketMine/PocketMine-SPL>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -128,7 +128,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 			include($path);
 			if(!class_exists($name, false) and !interface_exists($name, false) and !trait_exists($name, false)){
 				if($this->getParent() === null){
-					throw new ClassNotFoundException("对象 $name 没有找到");
+					throw new ClassNotFoundException("Class $name not found");
 				}
 				return false;
 			}
@@ -141,7 +141,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 
 			return true;
 		}elseif($this->getParent() === null){
-			throw new ClassNotFoundException("对象 $name 没有找到");
+			throw new ClassNotFoundException("Class $name not found");
 		}
 
 		return false;

@@ -1,22 +1,9 @@
 <?php
 
-/*
+/**
+ * OpenGenisys Project
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
+ * @author PeratX
  */
 
 
@@ -30,9 +17,10 @@ use pocketmine\Player;
 class Creeper extends Monster{
 	const NETWORK_ID = 33;
 
-	const DATA_SWELL = 19;
-	const DATA_SWELL_OLD = 20;
-	const DATA_SWELL_DIRECTION = 21;
+	const DATA_SWELL_DIRECTION = 16;
+	const DATA_SWELL = 17;
+	const DATA_SWELL_OLD = 18;
+	const DATA_POWERED = 19;
 
 	public $dropExp = [5, 5];
 	
@@ -46,7 +34,7 @@ class Creeper extends Monster{
 		if(!isset($this->namedtag->powered)){
 			$this->setPowered(false);
 		}
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_POWERED, $this->isPowered());
+		$this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->isPowered() ? 1 : 0);
 	}
 
 	public function setPowered(bool $powered, Lightning $lightning = null){
@@ -59,12 +47,12 @@ class Creeper extends Monster{
 
 		if(!$ev->isCancelled()){
 			$this->namedtag->powered = new ByteTag("powered", $powered ? 1 : 0);
-			$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_POWERED, $powered);
+			$this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $powered ? 1 : 0);
 		}
 	}
 
 	public function isPowered() : bool{
-		return (bool) $this->namedtag["powered"];
+		return $this->namedtag["powered"] == 0 ? false : true;
 	}
 
 	public function spawnTo(Player $player){

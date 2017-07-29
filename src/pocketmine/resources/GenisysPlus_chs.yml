@@ -14,7 +14,7 @@
 #Fixed by Tcanw
 #配置文件版本
 config:
- version: 28
+ version: 30
  
 level:
  #设置是否变换天气
@@ -28,17 +28,6 @@ level:
  lightning-fire: false
  #是否启用火焰蔓延
  fire-spread: false
- #是否开启地狱，打开此选项会自动生成地狱地图
- allow-nether: false
- #地狱地图名
- level-name: "nether"
-  
-network:
- #是否禁用raklib
- raklib-disable: false
-
-developer:
-  folder-plugin-loader: false
  
 player:
  #是否打开饥饿
@@ -53,8 +42,27 @@ player:
  keep-experience: false
  #如果玩家进入游戏时崩溃, 请设置低于10的值. 禁用 = -1
  chunk-radius: -1
- #是否开启检测玩家移动
- check-movement: true
+ 
+developer:
+  #是否允许服务器加载文件夹插件(源码)
+  #建议关闭
+  folder-plugin-loader: true
+  #是否允许服务器加载不兼容的API插件
+  #建议关闭
+  load-incompatible-api: true
+
+nether:
+ #是否允许地狱，打开此选项会自动生成地狱地图
+ allow-nether: true
+ #地狱地图名
+ level-name: "nether"
+
+ender:
+ #是否允许末路之地，打开此选项会自动生成末地地图
+ #（暂不能使用末地传送门）
+ allow-ender: true
+ #末地名
+ level-name: "ender"
  
 server:
  #是否允许生成铁傀儡
@@ -63,18 +71,28 @@ server:
  allow-snow-golem: false
  #是否禁用server.log
  disable-log: false
+ #是否启用反飞行作弊
+ anti-fly: true
  #是否启用异步方式发送区块
  async-chunk-request: true
  #玩家进出服务器消息提醒方式。0为Message，1为Tip，2为Popup
  player-msg-type: 0
  login-msg: "§3@player 加入了游戏"
  logout-msg: "§3@player 退出了游戏"
+ #是否进行移动检测(不再拉回了)
+ check-movement: true
  #是否限制创造某些功能(禁止丢物品, 禁止操作箱子等等)
  limited-creative: true
+ #是否开启方块破坏粒子
+ destroy-block-particle: true
  #是否允许喷溅型药水
  allow-splash-potion: true
  #是否启用高级指令选择器
  advanced-command-selector: false
+ #是否加载ResourcePackManager
+ enable-resource: false
+ #是否开启海绵的吸水功能
+ absorb-water: false
 
 enchantment:
  #是否允许使用铁砧
@@ -96,7 +114,7 @@ redstone:
  frequency-pulse: false
  #设置脉冲频率, 默认: 1s
  pulse-frequency: 1
- 
+
 dserver:
  #多服统统一人数
  enable: false
@@ -122,6 +140,34 @@ dserver:
  retry-times: 3
  #服务器列表，用;隔开，例如 1.example.com:19132;2.example.com:19133
  server-list: ""
+ 
+ai:
+ #AI总开关
+ enable: false
+ #僵尸的AI，0为关闭，1为1.0版AI，2为新AI（不完善）
+ zombie: 1
+ #僵尸猪人的AI
+ pigzombie: true
+ #牛和哞菇的AI
+ cow: true
+ #鸡的AI
+ chicken: true
+ #羊的AI
+ sheep: true
+ #猪的AI
+ pig: true
+ #骷髅的AI
+ skeleton: true
+ #苦力怕的AI
+ creeper: true
+ #铁傀儡的AI
+ iron-golem: true
+ #雪傀儡的AI
+ snow-golem: true
+ #苦力怕爆炸是否破坏方块
+ creeper-explode-destroy-block: false
+ #是否允许自动生成生物（不建议打开，打开后后台会报错，但是不影响使用）
+ mobgenerate: false
 
 inventory:
  #是否允许玩家背包作弊，如果你有困难在使用铁砧和附魔台时，可以选择开启此项

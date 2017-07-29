@@ -25,11 +25,12 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
 use pocketmine\inventory\PlayerInventory;
-use pocketmine\Player;
-use pocketmine\item\Item;
 use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\Item;
+use pocketmine\Player;
 
-class EntityDamageEvent extends EntityEvent implements Cancellable{
+
+class EntityDamageEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
 	const MODIFIER_BASE = 0;
@@ -278,8 +279,8 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	}
 
 	/**
-	 * @return array|Item
-     * notice: $usedArmors $index->$cost
+	 * @return Item $usedArmors
+	 * notice: $usedArmors $index->$cost
 	 * $index: the $index of ArmorInventory
 	 * $cost:  the num of durability cost
 	 */
@@ -317,11 +318,15 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 			$this->thornsArmor = array_rand($this->thornsLevel);
 			$thornsL = $this->thornsLevel[$this->thornsArmor];
 			if(mt_rand(1, 100) < $thornsL * 15){
-				$this->thornsDamage = mt_rand(1, 4);
+				//$this->thornsDamage = mt_rand(1, 4); 
+				$this->thornsDamage = 0; //Delete When #321 Is Fixed And Add In The Normal Damage
 			}
 		}
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getThornsDamage(){
 		return $this->thornsDamage;
 	}
@@ -337,12 +342,4 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 			return true;
 		}
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "EntityDamageEvent";
-	}
-
 }

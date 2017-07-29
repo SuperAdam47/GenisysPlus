@@ -1,6 +1,6 @@
 <?php
 
- /*
+/*
  *  _______                                     ______  _
  * /  ____ \                                   |  __  \| \
  * | |    \_|              _                   | |__| || |
@@ -10,42 +10,56 @@
  * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
  *                                   //
  *                                  (_)                Power by:
- *                                                           Tesseract
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @由Tessetact团队创建，GenisysPlus项目组修改
- * @链接 https://github.com/TesseractTeam
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
  * @链接 https://github.com/Tcanw/GenisysPlus
  *
- */
+*/
 
 namespace pocketmine\block;
 
 
 use pocketmine\item\Tool;
 
-class PurpurStairs extends Stair{
+class PurpurStairs extends Stair {
 
 	protected $id = self::PURPUR_STAIRS;
 
+	/**
+	 * PurpurStairs constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getHardness(){
 		return 1.5;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
-		return "Purpur Stairs"; 
+		return "Purpur Stairs";
 	}
 
 } 

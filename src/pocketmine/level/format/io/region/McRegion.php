@@ -19,7 +19,7 @@
  *
 */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace pocketmine\level\format\io\region;
 
@@ -37,7 +37,7 @@ use pocketmine\nbt\tag\{
 use pocketmine\Player;
 use pocketmine\utils\MainLogger;
 
-class McRegion extends BaseLevelProvider{
+class McRegion extends BaseLevelProvider {
 
 	const REGION_FILE_EXTENSION = "mcr";
 
@@ -206,15 +206,26 @@ class McRegion extends BaseLevelProvider{
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function getProviderName() : string{
 		return "mcregion";
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getWorldHeight() : int{
 		//TODO: add world height options
 		return 128;
 	}
 
+	/**
+	 * @param string $path
+	 *
+	 * @return bool
+	 */
 	public static function isValid(string $path) : bool{
 		$isValid = (file_exists($path . "/level.dat") and is_dir($path . "/region/"));
 
@@ -237,6 +248,13 @@ class McRegion extends BaseLevelProvider{
 		return $isValid;
 	}
 
+	/**
+	 * @param string     $path
+	 * @param string     $name
+	 * @param int|string $seed
+	 * @param string     $generator
+	 * @param array      $options
+	 */
 	public static function generate(string $path, string $name, $seed, string $generator, array $options = []){
 		if(!file_exists($path)){
 			mkdir($path, 0777, true);
@@ -247,23 +265,23 @@ class McRegion extends BaseLevelProvider{
 		}
 		//TODO, add extra details
 		$levelData = new CompoundTag("Data", [
-			new ByteTag("hardcore", 0),
-			new ByteTag("initialized", 1),
-			new IntTag("GameType", 0),
-			new IntTag("generatorVersion", 1), //2 in MCPE
-			new IntTag("SpawnX", 256),
-			new IntTag("SpawnY", 70),
-			new IntTag("SpawnZ", 256),
-			new IntTag("version", 19133),
-			new IntTag("DayTime", 0),
-			new LongTag("LastPlayed", microtime(true) * 1000),
-			new LongTag("RandomSeed", $seed),
-			new LongTag("SizeOnDisk", 0),
-			new LongTag("Time", 0),
-			new StringTag("generatorName", Generator::getGeneratorName($generator)),
-			new StringTag("generatorOptions", isset($options["preset"]) ? $options["preset"] : ""),
-			new StringTag("LevelName", $name),
-			new CompoundTag("GameRules", [])
+			"hardcore" => new ByteTag("hardcore", 0),
+			"initialized" => new ByteTag("initialized", 1),
+			"GameType" => new IntTag("GameType", 0),
+			"generatorVersion" => new IntTag("generatorVersion", 1), //2 in MCPE
+			"SpawnX" => new IntTag("SpawnX", 128),
+			"SpawnY" => new IntTag("SpawnY", 70),
+			"SpawnZ" => new IntTag("SpawnZ", 128),
+			"version" => new IntTag("version", 19133),
+			"DayTime" => new IntTag("DayTime", 0),
+			"LastPlayed" => new LongTag("LastPlayed", microtime(true) * 1000),
+			"RandomSeed" => new LongTag("RandomSeed", $seed),
+			"SizeOnDisk" => new LongTag("SizeOnDisk", 0),
+			"Time" => new LongTag("Time", 0),
+			"generatorName" => new StringTag("generatorName", Generator::getGeneratorName($generator)),
+			"generatorOptions" => new StringTag("generatorOptions", isset($options["preset"]) ? $options["preset"] : ""),
+			"LevelName" => new StringTag("LevelName", $name),
+			"GameRules" => new CompoundTag("GameRules", [])
 		]);
 		$nbt = new NBT(NBT::BIG_ENDIAN);
 		$nbt->setData(new CompoundTag("", [
@@ -273,14 +291,27 @@ class McRegion extends BaseLevelProvider{
 		file_put_contents($path . "level.dat", $buffer);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getGenerator() : string{
 		return (string) $this->levelData["generatorName"];
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getGeneratorOptions() : array{
 		return ["preset" => $this->levelData["generatorOptions"]];
 	}
 
+	/**
+	 * @param int  $chunkX
+	 * @param int  $chunkZ
+	 * @param bool $create
+	 *
+	 * @return null|Chunk
+	 */
 	public function getChunk(int $chunkX, int $chunkZ, bool $create = false){
 		$index = Level::chunkHash($chunkX, $chunkZ);
 		if(isset($this->chunks[$index])){
@@ -292,6 +323,11 @@ class McRegion extends BaseLevelProvider{
 		}
 	}
 
+	/**
+	 * @param int   $chunkX
+	 * @param int   $chunkZ
+	 * @param Chunk $chunk
+	 */
 	public function setChunk(int $chunkX, int $chunkZ, Chunk $chunk){
 		self::getRegionIndex($chunkX, $chunkZ, $regionX, $regionZ);
 		$this->loadRegion($regionX, $regionZ);
@@ -307,12 +343,18 @@ class McRegion extends BaseLevelProvider{
 		$this->chunks[$index] = $chunk;
 	}
 
+	/**
+	 * @param int $chunkX
+	 * @param int $chunkZ
+	 *
+	 * @return bool
+	 */
 	public function saveChunk(int $chunkX, int $chunkZ) : bool{
 		if($this->isChunkLoaded($chunkX, $chunkZ)){
-            $chunk = $this->getChunk($chunkX, $chunkZ);
-            if(!$chunk->isGenerated()){
-                throw new \InvalidStateException("无法保存未生成的区块");
-            }
+			$chunk = $this->getChunk($chunkX, $chunkZ);
+			if(!$chunk->isGenerated()){
+				throw new \InvalidStateException("Cannot save un-generated chunk");
+			}
 			$this->getRegion($chunkX >> 5, $chunkZ >> 5)->writeChunk($chunk);
 
 			return true;
@@ -327,6 +369,13 @@ class McRegion extends BaseLevelProvider{
 		}
 	}
 
+	/**
+	 * @param int  $chunkX
+	 * @param int  $chunkZ
+	 * @param bool $create
+	 *
+	 * @return bool
+	 */
 	public function loadChunk(int $chunkX, int $chunkZ, bool $create = false) : bool{
 		$index = Level::chunkHash($chunkX, $chunkZ);
 		if(isset($this->chunks[$index])){
@@ -352,6 +401,13 @@ class McRegion extends BaseLevelProvider{
 		}
 	}
 
+	/**
+	 * @param int  $chunkX
+	 * @param int  $chunkZ
+	 * @param bool $safe
+	 *
+	 * @return bool
+	 */
 	public function unloadChunk(int $chunkX, int $chunkZ, bool $safe = true) : bool{
 		$chunk = $this->chunks[$index = Level::chunkHash($chunkX, $chunkZ)] ?? null;
 		if($chunk instanceof Chunk and $chunk->unload($safe)){
@@ -364,15 +420,27 @@ class McRegion extends BaseLevelProvider{
 
 	public function unloadChunks(){
 		foreach($this->chunks as $chunk){
-			$this->unloadChunk($chunk->getX(), $chunk->getZ());
+			$this->unloadChunk($chunk->getX(), $chunk->getZ(), false);
 		}
 		$this->chunks = [];
 	}
 
+	/**
+	 * @param int $chunkX
+	 * @param int $chunkZ
+	 *
+	 * @return bool
+	 */
 	public function isChunkLoaded(int $chunkX, int $chunkZ) : bool{
 		return isset($this->chunks[Level::chunkHash($chunkX, $chunkZ)]);
 	}
 
+	/**
+	 * @param int $chunkX
+	 * @param int $chunkZ
+	 *
+	 * @return bool
+	 */
 	public function isChunkGenerated(int $chunkX, int $chunkZ) : bool{
 		if(($region = $this->getRegion($chunkX >> 5, $chunkZ >> 5)) !== null){
 			return $region->chunkExists($chunkX - $region->getX() * 32, $chunkZ - $region->getZ() * 32) and $this->getChunk($chunkX - $region->getX() * 32, $chunkZ - $region->getZ() * 32, true)->isGenerated();
@@ -381,6 +449,12 @@ class McRegion extends BaseLevelProvider{
 		return false;
 	}
 
+	/**
+	 * @param int $chunkX
+	 * @param int $chunkZ
+	 *
+	 * @return bool
+	 */
 	public function isChunkPopulated(int $chunkX, int $chunkZ) : bool{
 		$chunk = $this->getChunk($chunkX, $chunkZ);
 		if($chunk !== null){
@@ -390,6 +464,9 @@ class McRegion extends BaseLevelProvider{
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLoadedChunks() : array{
 		return $this->chunks;
 	}

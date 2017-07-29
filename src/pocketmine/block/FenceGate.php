@@ -23,36 +23,56 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\level\sound\DoorSound;
 use pocketmine\math\AxisAlignedBB;
-use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
 
-class FenceGate extends Transparent{
+class FenceGate extends Transparent implements ElectricalAppliance {
 
 	protected $id = self::FENCE_GATE;
 
+	/**
+	 * FenceGate constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Oak Fence Gate";
 	}
 
-	public function getHardness() {
+	/**
+	 * @return int
+	 */
+	public function getHardness(){
 		return 2;
 	}
 
-	public function canBeActivated() : bool {
+	/**
+	 * @return bool
+	 */
+	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_AXE;
 	}
 
 
-	protected function recalculateBoundingBox() {
+	/**
+	 * @return null|AxisAlignedBB
+	 */
+	protected function recalculateBoundingBox(){
 
 		if(($this->getDamage() & 0x04) > 0){
 			return null;
@@ -80,28 +100,58 @@ class FenceGate extends Transparent{
 		}
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Block       $block
+	 * @param Block       $target
+	 * @param int         $face
+	 * @param float       $fx
+	 * @param float       $fy
+	 * @param float       $fz
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-        $this->meta = ($player instanceof Player ? ($player->getDirection() - 1) & 0x03 : 0);
+		$this->meta = ($player instanceof Player ? ($player->getDirection() - 1) & 0x03 : 0);
 		$this->getLevel()->setBlock($block, $this, true, true);
 
 		return true;
 	}
 
-	public function getDrops(Item $item) : array {
+	/**
+	 * @return bool
+	 */
+	public function isOpened(){
+		return (($this->getDamage() & 0x04) > 0);
+	}
+
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
+	public function getDrops(Item $item) : array{
 		return [
 			[$this->id, 0, 1],
 		];
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null){
-        $this->meta = (($this->meta ^ 0x04) & ~0x02);
+		$this->meta = (($this->meta ^ 0x04) & ~0x02);
 
-        if($player !== null){
-            $this->meta |= (($player->getDirection() - 1) & 0x02);
-        }
+		if($player !== null){
+			$this->meta |= (($player->getDirection() - 1) & 0x02);
+		}
 
 		$this->getLevel()->setBlock($this, $this, true);
-		$this->level->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_DOOR);
+		$this->level->addSound(new DoorSound($this));
 		return true;
 	}
 }

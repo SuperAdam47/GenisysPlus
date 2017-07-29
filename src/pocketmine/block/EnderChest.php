@@ -1,6 +1,6 @@
 <?php
 
- /*
+/*
  *  _______                                     ______  _
  * /  ____ \                                   |  __  \| \
  * | |    \_|              _                   | |__| || |
@@ -10,57 +10,90 @@
  * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
  *                                   //
  *                                  (_)                Power by:
- *                                                           Tesseract
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @由Tessetact团队创建，GenisysPlus项目组修改
- * @链接 https://github.com/TesseractTeam
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
  * @链接 https://github.com/Tcanw/GenisysPlus
  *
- */
+*/
 
 namespace pocketmine\block;
 
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
-use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use pocketmine\tile\EnderChest as TileEnderChest;
 use pocketmine\tile\Tile;
 
-class EnderChest extends Transparent{
+class EnderChest extends Transparent {
 
 	protected $id = self::ENDER_CHEST;
 
+	/**
+	 * EnderChest constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getHardness(){
 		return 22.5;
 	}
 
-	public function getToolType(){
-		return Tool::TYPE_PICKAXE;
+	/**
+	 * @return int
+	 */
+	public function getResistance(){
+		return 3000;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getLightLevel(){
+		return 7;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Ender Chest";
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getToolType(){
+		return Tool::TYPE_PICKAXE;
+	}
+
+	/**
+	 * @return AxisAlignedBB
+	 */
 	protected function recalculateBoundingBox(){
 		return new AxisAlignedBB(
 			$this->x + 0.0625,
@@ -72,41 +105,51 @@ class EnderChest extends Transparent{
 		);
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Block       $block
+	 * @param Block       $target
+	 * @param int         $face
+	 * @param float       $fx
+	 * @param float       $fy
+	 * @param float       $fz
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-			$faces = [
-				0 => 4,
-				1 => 2,
-				2 => 5,
-				3 => 3,
-			];
-			
-			$this->meta = $faces[$player instanceof Player ? $player->getDirection() : 0];
-			
-			$this->getLevel()->setBlock($block, $this, true, true);
-			$nbt = new CompoundTag("", [
-				new ListTag("Items", []),
-				new StringTag("id", Tile::ENDER_CHEST),
-				new IntTag("x", $this->x),
-				new IntTag("y", $this->y),
-				new IntTag("z", $this->z)
-			]);
-			$nbt->Items->setTagType(NBT::TAG_Compound);
+		$faces = [
+			0 => 4,
+			1 => 2,
+			2 => 5,
+			3 => 3,
+		];
 
-			if($item->hasCustomName()){
-				$nbt->CustomName = new StringTag("CustomName", $item->getCustomName());
-			}
+		$this->meta = $faces[$player instanceof Player ? $player->getDirection() : 0];
 
-			$tile = Tile::createTile("EnderChest", $this->getLevel(), $nbt);
+		$this->getLevel()->setBlock($block, $this, true, true);
+		$nbt = new CompoundTag("", [
+			new StringTag("id", Tile::ENDER_CHEST),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z)
+		]);
 
-			return true;
+		if($item->hasCustomName()){
+			$nbt->CustomName = new StringTag("CustomName", $item->getCustomName());
 		}
 
-	public function onBreak(Item $item){
-		$this->getLevel()->setBlock($this, new Air(), true, true);
+		Tile::createTile("EnderChest", $this->getLevel(), $nbt);
 
 		return true;
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null){
 		if($player instanceof Player){
 			$top = $this->getSide(1);
@@ -114,14 +157,14 @@ class EnderChest extends Transparent{
 				return true;
 			}
 
-			if(!($this->getLevel()->getTile($this) instanceof TileEnderChest)) {
+			if(!($this->getLevel()->getTile($this) instanceof TileEnderChest)){
 				$nbt = new CompoundTag("", [
 					new StringTag("id", Tile::ENDER_CHEST),
 					new IntTag("x", $this->x),
 					new IntTag("y", $this->y),
 					new IntTag("z", $this->z)
 				]);
- 				Tile::createTile("EnderChest", $this->getLevel(), $nbt);
+				Tile::createTile("EnderChest", $this->getLevel(), $nbt);
 			}
 
 			if($player->isCreative() and $player->getServer()->limitedCreative){
@@ -134,7 +177,17 @@ class EnderChest extends Transparent{
 		return true;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
 	public function getDrops(Item $item) : array{
+		if($item->hasEnchantment(Enchantment::TYPE_MINING_SILK_TOUCH)){
+			return [
+				[$this->id, 0, 1],
+			];
+		}
 		return [
 			[Item::OBSIDIAN, 0, 8],
 		];

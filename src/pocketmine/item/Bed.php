@@ -1,25 +1,21 @@
 <?php
 
- /*
- *  _______                                     ______  _
- * /  ____ \                                   |  __  \| \
- * | |    \_|              _                   | |__| || |
- * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
- * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
- * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
- * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
- *                                   //
- *                                  (_)                Power by:
- *                                                           Pocketmine-MP
+/*
+ *
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
+ * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
- * @链接 http://www.pocketmine.net/
- * @链接 https://github.com/Tcanw/GenisysPlus
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
+ * 
  *
 */
 
@@ -27,7 +23,7 @@ namespace pocketmine\item;
 
 use pocketmine\block\Block;
 
-class Bed extends Item{
+class Bed extends Item {
 
 	const WHITE_BED = 0;
 	const ORANGE_BED = 1;
@@ -46,11 +42,20 @@ class Bed extends Item{
 	const RED_BED = 14;
 	const BLACK_BED = 15;
 
+	/**
+	 * Bed constructor.
+	 *
+	 * @param int $meta
+	 * @param int $count
+	 */
 	public function __construct($meta = self::WHITE_BED, $count = 1){
 		$this->block = Block::get(Item::BED_BLOCK, $meta);
 		parent::__construct(self::BED, $meta, $count, "Bed"); //TODO: Bed Names
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getMaxStackSize() : int{
 		return 1;
 	}

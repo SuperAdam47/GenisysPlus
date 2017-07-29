@@ -1,6 +1,6 @@
 <?php
 
- /*
+/*
  *  _______                                     ______  _
  * /  ____ \                                   |  __  \| \
  * | |    \_|              _                   | |__| || |
@@ -10,18 +10,20 @@
  * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
  *                                   //
  *                                  (_)                Power by:
- *                                                           Tesseract
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @由Tessetact团队创建，GenisysPlus项目组修改
- * @链接 https://github.com/TesseractTeam
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
  * @链接 https://github.com/Tcanw/GenisysPlus
  *
- */
+*/
+
+/* TODO: 骑马 */
 
 namespace pocketmine\entity;
 
@@ -29,14 +31,20 @@ use pocketmine\Player;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
 
-class Horse extends Living{
+class Horse extends Living {
 
 	const NETWORK_ID = 23;
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Horse";
 	}
-	
+
+	/**
+	 * @param $id
+	 */
 	public function setChestPlate($id){
 		/*	
 		416, 417, 418, 419 only
@@ -44,16 +52,19 @@ class Horse extends Living{
 		$pk = new MobArmorEquipmentPacket();
 		$pk->eid = $this->getId();
 		$pk->slots = [
-		ItemItem::get(0,0),
-		ItemItem::get($id,0),
-		ItemItem::get(0,0),
-		ItemItem::get(0,0)
+			ItemItem::get(0, 0),
+			ItemItem::get($id, 0),
+			ItemItem::get(0, 0),
+			ItemItem::get(0, 0)
 		];
 		foreach($this->level->getPlayers() as $player){
 			$player->dataPacket($pk);
 		}
 	}
-	
+
+	/**
+	 * @param Player $player
+	 */
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();

@@ -24,8 +24,7 @@ namespace pocketmine\event\entity;
 use pocketmine\entity\Item;
 use pocketmine\event\Cancellable;
 
-class ItemDespawnEvent extends EntityEvent implements Cancellable{
-
+class ItemDespawnEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/**
@@ -41,13 +40,6 @@ class ItemDespawnEvent extends EntityEvent implements Cancellable{
 	 */
 	public function getEntity(){
 		return $this->entity;
-	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "ItemDespawnEvent";
 	}
 
 }

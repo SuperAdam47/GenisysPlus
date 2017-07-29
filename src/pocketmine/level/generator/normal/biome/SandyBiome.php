@@ -23,17 +23,19 @@ namespace pocketmine\level\generator\normal\biome;
 
 
 use pocketmine\block\Block;
-use pocketmine\level\generator\normal\populator\Cactus;
-use pocketmine\level\generator\normal\populator\DeadBush;
+use pocketmine\level\generator\populator\Cactus;
+use pocketmine\level\generator\populator\DeadBush;
 
-class SandyBiome extends GrassyBiome{
+class SandyBiome extends GrassyBiome {
 
+	/**
+	 * SandyBiome constructor.
+	 */
 	public function __construct(){
 		parent::__construct();
 
 		$cactus = new Cactus();
-		$cactus->setBaseAmount(2);
-		$cactus->setRandomAmount(1);
+		$cactus->setBaseAmount(6);
 		$deadBush = new DeadBush();
 		$deadBush->setBaseAmount(2);
 
@@ -83,6 +85,9 @@ class SandyBiome extends GrassyBiome{
 		]);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Sandy";
 	}

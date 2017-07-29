@@ -23,28 +23,25 @@ namespace pocketmine\level;
 
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
+use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
-use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\item\Item;
 use pocketmine\level\particle\HugeExplodeSeedParticle;
-use pocketmine\level\sound\ExplodeSound;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\protocol\ExplodePacket;
-
-use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\utils\Random;
 
-class Explosion{
+class Explosion {
 
 	private $rays = 16; //Rays
 	public $level;
@@ -59,6 +56,14 @@ class Explosion{
 	private $what;
 	private $dropItem;
 
+	/**
+	 * Explosion constructor.
+	 *
+	 * @param Position $center
+	 * @param          $size
+	 * @param null     $what
+	 * @param bool     $dropItem
+	 */
 	public function __construct(Position $center, $size, $what = null, bool $dropItem = true){
 		$this->level = $center->getLevel();
 		$this->source = $center;
@@ -121,6 +126,9 @@ class Explosion{
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function explodeB() : bool{
 		$send = [];
 		$updateBlocks = [];
@@ -181,17 +189,17 @@ class Explosion{
 			if($block->getId() === Block::TNT){
 				$mot = (new Random())->nextSignedFloat() * M_PI * 2;
 				$tnt = Entity::createEntity("PrimedTNT", $this->level, new CompoundTag("", [
-					new ListTag("Pos", [
+					"Pos" => new ListTag("Pos", [
 						new DoubleTag("", $block->x + 0.5),
 						new DoubleTag("", $block->y),
 						new DoubleTag("", $block->z + 0.5)
 					]),
-					new ListTag("Motion", [
+					"Motion" => new ListTag("Motion", [
 						new DoubleTag("", -sin($mot) * 0.02),
 						new DoubleTag("", 0.2),
 						new DoubleTag("", -cos($mot) * 0.02)
 					]),
-					new ListTag("Rotation", [
+					"Rotation" => new ListTag("Rotation", [
 						new FloatTag("", 0),
 						new FloatTag("", 0)
 					]),
@@ -230,7 +238,6 @@ class Explosion{
 		$this->level->addChunkPacket($source->x >> 4, $source->z >> 4, $pk);
 
 		$this->level->addParticle(new HugeExplodeSeedParticle($source));
-		$this->level->broadcastLevelSoundEvent($source, LevelSoundEventPacket::SOUND_EXPLODE);
 
 		return true;
 	}

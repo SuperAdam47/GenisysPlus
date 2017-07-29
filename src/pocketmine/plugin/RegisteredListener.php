@@ -26,7 +26,7 @@ use pocketmine\event\Event;
 use pocketmine\event\Listener;
 use pocketmine\event\TimingsHandler;
 
-class RegisteredListener{
+class RegisteredListener {
 
 	/** @var Listener */
 	private $listener;
@@ -52,7 +52,7 @@ class RegisteredListener{
 	 * @param EventExecutor  $executor
 	 * @param int            $priority
 	 * @param Plugin         $plugin
-	 * @param boolean        $ignoreCancelled
+	 * @param bool           $ignoreCancelled
 	 * @param TimingsHandler $timings
 	 */
 	public function __construct(Listener $listener, EventExecutor $executor, $priority, Plugin $plugin, $ignoreCancelled, TimingsHandler $timings){

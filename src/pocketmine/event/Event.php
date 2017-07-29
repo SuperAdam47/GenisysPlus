@@ -22,9 +22,10 @@
 /**
  * Event related classes
  */
+
 namespace pocketmine\event;
 
-abstract class Event{
+abstract class Event {
 
 	/**
 	 * Any callable event must declare the static variable
@@ -62,8 +63,6 @@ abstract class Event{
 
 	/**
 	 * @param bool $value
-	 *
-	 * @return bool
 	 *
 	 * @throws \BadMethodCallException
 	 */

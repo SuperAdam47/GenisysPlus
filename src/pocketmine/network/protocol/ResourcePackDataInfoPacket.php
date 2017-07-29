@@ -24,7 +24,7 @@ namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
 
-class ResourcePackDataInfoPacket extends DataPacket{
+class ResourcePackDataInfoPacket extends DataPacket {
 	const NETWORK_ID = Info::RESOURCE_PACK_DATA_INFO_PACKET;
 
 	public $packId;
@@ -33,6 +33,9 @@ class ResourcePackDataInfoPacket extends DataPacket{
 	public $compressedPackSize;
 	public $sha256;
 
+	/**
+	 *
+	 */
 	public function decode(){
 		$this->packId = $this->getString();
 		$this->maxChunkSize = $this->getLInt();
@@ -41,6 +44,9 @@ class ResourcePackDataInfoPacket extends DataPacket{
 		$this->sha256 = $this->getString();
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putString($this->packId);
@@ -49,5 +55,4 @@ class ResourcePackDataInfoPacket extends DataPacket{
 		$this->putLLong($this->compressedPackSize);
 		$this->putString($this->sha256);
 	}
-
 }

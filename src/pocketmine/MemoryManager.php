@@ -1,21 +1,25 @@
 <?php
 
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
 */
 
@@ -27,7 +31,7 @@ use pocketmine\scheduler\GarbageCollectionTask;
 use pocketmine\utils\Utils;
 
 
-class MemoryManager{
+class MemoryManager {
 
 	/** @var Server */
 	private $server;
@@ -48,7 +52,7 @@ class MemoryManager{
 	private $garbageCollectionTrigger;
 	private $garbageCollectionAsync;
 
-	private $chunkLimit;
+	private $chunkRadiusOverride;
 	private $chunkCollect;
 	private $chunkTrigger;
 
@@ -62,6 +66,11 @@ class MemoryManager{
 
 	private $leakSeed = 0;
 
+	/**
+	 * MemoryManager constructor.
+	 *
+	 * @param Server $server
+	 */
 	public function __construct(Server $server){
 		$this->server = $server;
 
@@ -112,7 +121,7 @@ class MemoryManager{
 		$this->garbageCollectionTrigger = (bool) $this->server->getProperty("memory.garbage-collection.low-memory-trigger", true);
 		$this->garbageCollectionAsync = (bool) $this->server->getProperty("memory.garbage-collection.collect-async-worker", true);
 
-		$this->chunkLimit = (int) $this->server->getProperty("memory.max-chunks.trigger-limit", 96);
+		$this->chunkRadiusOverride = (int) $this->server->getProperty("memory.max-chunks.chunk-radius", 4);
 		$this->chunkCollect = (bool) $this->server->getProperty("memory.max-chunks.trigger-chunk-collect", true);
 		$this->chunkTrigger = (bool) $this->server->getProperty("memory.max-chunks.low-memory-trigger", true);
 
@@ -122,20 +131,39 @@ class MemoryManager{
 		gc_enable();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isLowMemory(){
 		return $this->lowMemory;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canUseChunkCache(){
 		return !($this->lowMemory and $this->chunkTrigger);
 	}
 
-	public function getViewDistance($distance){
-		return $this->lowMemory ? min($this->chunkLimit, $distance) : $distance;
+	/**
+	 * Returns the allowed chunk radius based on the current memory usage.
+	 *
+	 * @param int $distance
+	 *
+	 * @return int
+	 */
+	public function getViewDistance(int $distance) : int{
+		return $this->lowMemory ? min($this->chunkRadiusOverride, $distance) : $distance;
 	}
 
+	/**
+	 * @param      $memory
+	 * @param      $limit
+	 * @param bool $global
+	 * @param int  $triggerCount
+	 */
 	public function trigger($memory, $limit, $global = false, $triggerCount = 0){
-		$this->server->getLogger()->debug("[Memory Manager] ".($global ? "Global " : "") ."Low memory triggered, limit ". round(($limit / 1024) / 1024, 2)."MB, using ". round(($memory / 1024) / 1024, 2)."MB");
+		$this->server->getLogger()->debug("[Memory Manager] " . ($global ? "Global " : "") . "Low memory triggered, limit " . round(($limit / 1024) / 1024, 2) . "MB, using " . round(($memory / 1024) / 1024, 2) . "MB");
 
 		if($this->cacheTrigger){
 			foreach($this->server->getLevels() as $level){
@@ -157,7 +185,7 @@ class MemoryManager{
 			$cycles = $this->triggerGarbageCollector();
 		}
 
-		$this->server->getLogger()->debug("[Memory Manager] Freed " . round(($ev->getMemoryFreed() / 1024) / 1024, 2)."MB, $cycles cycles");
+		$this->server->getLogger()->debug("[Memory Manager] Freed " . round(($ev->getMemoryFreed() / 1024) / 1024, 2) . "MB, $cycles cycles");
 	}
 
 	public function check(){
@@ -197,6 +225,9 @@ class MemoryManager{
 		Timings::$memoryManagerTimer->stopTiming();
 	}
 
+	/**
+	 * @return int
+	 */
 	public function triggerGarbageCollector(){
 		Timings::$garbageCollectorTimer->startTiming();
 
@@ -247,6 +278,11 @@ class MemoryManager{
 		return $id;
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return bool
+	 */
 	public function isObjectAlive($id){
 		if(isset($this->leakWatch[$id])){
 			return $this->leakWatch[$id]->valid();
@@ -255,6 +291,9 @@ class MemoryManager{
 		return false;
 	}
 
+	/**
+	 * @param $id
+	 */
 	public function removeObjectWatch($id){
 		if(!isset($this->leakWatch[$id])){
 			return;
@@ -272,6 +311,12 @@ class MemoryManager{
 		}
 	}
 
+	/**
+	 * @param      $id
+	 * @param bool $includeObject
+	 *
+	 * @return array|null
+	 */
 	public function getObjectInformation($id, $includeObject = false){
 		if(!isset($this->leakWatch[$id])){
 			return null;
@@ -299,9 +344,14 @@ class MemoryManager{
 		];
 	}
 
+	/**
+	 * @param $outputFolder
+	 * @param $maxNesting
+	 * @param $maxStringSize
+	 */
 	public function dumpServerMemory($outputFolder, $maxNesting, $maxStringSize){
 		gc_disable();
-		ini_set("memory_limit",-1);
+		ini_set("memory_limit", -1);
 		if(!file_exists($outputFolder)){
 			mkdir($outputFolder, 0777, true);
 		}
@@ -357,7 +407,7 @@ class MemoryManager{
 					$this->continueDump($property->getValue($object), $info["properties"][$property->getName()], $objects, $refCounts, 0, $maxNesting, $maxStringSize);
 				}
 
-				fwrite($obData, "$hash@$className: ". json_encode($info, JSON_UNESCAPED_SLASHES) . "\n");
+				fwrite($obData, "$hash@$className: " . json_encode($info, JSON_UNESCAPED_SLASHES) . "\n");
 
 				if(!isset($objects["staticProperties"][$className])){
 					$staticProperties[$className] = [];
@@ -377,6 +427,8 @@ class MemoryManager{
 			echo "[Dump] Wrote " . count($objects) . " objects\n";
 		}while($continue);
 
+		fclose($obData);
+
 		file_put_contents($outputFolder . "/staticProperties.js", json_encode($staticProperties, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 		file_put_contents($outputFolder . "/serverEntry.js", json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 		file_put_contents($outputFolder . "/referenceCounts.js", json_encode($refCounts, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
@@ -384,10 +436,17 @@ class MemoryManager{
 		echo "[Dump] Finished!\n";
 
 		gc_enable();
-
-		$this->server->forceShutdown();
 	}
 
+	/**
+	 * @param $from
+	 * @param $data
+	 * @param $objects
+	 * @param $refCounts
+	 * @param $recursion
+	 * @param $maxNesting
+	 * @param $maxStringSize
+	 */
 	private function continueDump($from, &$data, &$objects, &$refCounts, $recursion, $maxNesting, $maxStringSize){
 		if($maxNesting <= 0){
 			$data = "(error) NESTING LIMIT REACHED";
@@ -415,7 +474,7 @@ class MemoryManager{
 				$this->continueDump($value, $data[$key], $objects, $refCounts, $recursion + 1, $maxNesting, $maxStringSize);
 			}
 		}elseif(is_string($from)){
-			$data = "(string) len(". strlen($from) .") " . substr(Utils::printable($from), 0, $maxStringSize);
+			$data = "(string) len(" . strlen($from) . ") " . substr(Utils::printable($from), 0, $maxStringSize);
 		}elseif(is_resource($from)){
 			$data = "(resource) " . print_r($from, true);
 		}else{

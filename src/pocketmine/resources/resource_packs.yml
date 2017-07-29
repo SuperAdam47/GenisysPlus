@@ -5,9 +5,13 @@
 force_resources: false
 resource_stack:
  #这里的资源包是从上到下应用的。和手机版一样，上面的会覆盖下面的
+ #.zip格式的材质包安装到resource_packs文件夹中后
  #必须用下面的格式来放置资源包
  #举例说明：
  # - 名子.zip
  # - natural.zip
  # - vanilla.zip
+ #格式修改好后需要把force_resources: false修改为force_resources: true才可生效
  #如果要强制玩家使用我的世界手机版的默认资源包资源，那么你必须在资源文件夹中放置一个原版资源包，并将其添加到文件夹中。 
+ #教程由核心作者Tcanw和永成互联老王共同编写
+ 

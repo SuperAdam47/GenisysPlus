@@ -22,40 +22,60 @@
 namespace pocketmine\block;
 
 use pocketmine\event\block\BlockSpreadEvent;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
-use pocketmine\item\enchantment\Enchantment;
-use pocketmine\level\generator\normal\object\TallGrass as TallGrassObject;
+use pocketmine\level\generator\object\TallGrass as TallGrassObject;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\Random;
 
-class Grass extends Solid{
+class Grass extends Solid {
 
 	protected $id = self::GRASS;
 
-	public function __construct(){
-
+	/**
+	 * Grass constructor.
+	 */
+	public function __construct($meta = 0){
+		$this->meta = $meta;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Grass";
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getHardness(){
 		return 0.6;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_SHOVEL;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
 	public function getDrops(Item $item) : array{
 		if($item->getEnchantmentLevel(Enchantment::TYPE_MINING_SILK_TOUCH) > 0){
 			return [
@@ -68,6 +88,9 @@ class Grass extends Solid{
 		}
 	}
 
+	/**
+	 * @param int $type
+	 */
 	public function onUpdate($type){
 		if($type === Level::BLOCK_UPDATE_RANDOM){
 			$block = $this->getLevel()->getBlock(new Vector3($this->x, $this->y, $this->z));
@@ -90,6 +113,12 @@ class Grass extends Solid{
 		}
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null){
 		if($item->getId() === Item::DYE and $item->getDamage() === 0x0F){
 			$item->count--;

@@ -1,23 +1,27 @@
 <?php
 
 /*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
- */
+*/
 
 namespace pocketmine\block;
 
@@ -25,29 +29,65 @@ use pocketmine\item\Item;
 use pocketmine\item\Tool;
 
 
-class LitRedstoneLamp extends Solid{
+class LitRedstoneLamp extends Solid {
 	protected $id = self::LIT_REDSTONE_LAMP;
 
+	/**
+	 * LitRedstoneLamp constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Lit Redstone Lamp";
 	}
 
-	public function getHardness() {
+	/**
+	 * @return float
+	 */
+	public function getHardness(){
 		return 0.3;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
 
 
-	public function getDrops(Item $item) : array {
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
+	public function getDrops(Item $item) : array{
 		return [
-			[Item::REDSTONE_LAMP, 0 ,1],
+			[Item::REDSTONE_LAMP, 0, 1],
 		];
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function turnOn(){
+		$this->meta = 0;
+		$this->getLevel()->setBlock($this, $this, true, false);
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function turnOff(){
+		$this->getLevel()->setBlock($this, new RedstoneLamp(), true, true);
+		return true;
 	}
 }

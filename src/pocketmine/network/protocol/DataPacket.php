@@ -28,18 +28,27 @@ use pocketmine\item\Item;
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\Utils;
 
-abstract class DataPacket extends BinaryStream{
+abstract class DataPacket extends BinaryStream {
 
 	const NETWORK_ID = 0;
 
 	public $isEncoded = false;
 
+	/**
+	 * @return int
+	 */
 	public function pid(){
 		return $this::NETWORK_ID;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	abstract public function encode();
 
+	/**
+	 * @return mixed
+	 */
 	abstract public function decode();
 
 	public function reset(){
@@ -47,13 +56,20 @@ abstract class DataPacket extends BinaryStream{
 		$this->offset = 0;
 	}
 
+	/**
+	 * @return $this
+	 */
 	public function clean(){
 		$this->buffer = null;
 		$this->isEncoded = false;
 		$this->offset = 0;
+
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function __debugInfo(){
 		$data = [];
 		foreach($this as $k => $v){
@@ -68,7 +84,12 @@ abstract class DataPacket extends BinaryStream{
 
 		return $data;
 	}
-	
+
+	/**
+	 * @param bool $types
+	 *
+	 * @return array
+	 */
 	public function getEntityMetadata(bool $types = true) : array{
 		$count = $this->getUnsignedVarInt();
 		$data = [];
@@ -122,9 +143,13 @@ abstract class DataPacket extends BinaryStream{
 				$data[$key] = $value;
 			}
 		}
+
 		return $data;
 	}
-	
+
+	/**
+	 * @param array $metadata
+	 */
 	public function putEntityMetadata(array $metadata){
 		$this->putUnsignedVarInt(count($metadata));
 		foreach($metadata as $key => $d){
@@ -168,7 +193,7 @@ abstract class DataPacket extends BinaryStream{
 
 	/**
 	 * @return PacketName|string
-     */
+	 */
 	public function getName(){
 		return "DataPacket";
 	}

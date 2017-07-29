@@ -29,7 +29,7 @@ use pocketmine\level\Position;
 /**
  * Called when a entity explodes
  */
-class EntityExplodeEvent extends EntityEvent implements Cancellable{
+class EntityExplodeEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/** @var Position */
@@ -89,13 +89,6 @@ class EntityExplodeEvent extends EntityEvent implements Cancellable{
 	 */
 	public function setYield($yield){
 		$this->yield = $yield;
-	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "EntityExplodeEvent";
 	}
 
 }

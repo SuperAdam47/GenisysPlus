@@ -28,38 +28,61 @@ use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\Player;
 
-class Ladder extends Transparent{
+class Ladder extends Transparent {
 
 	protected $id = self::LADDER;
 
+	/**
+	 * Ladder constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Ladder";
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasEntityCollision(){
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isSolid(){
 		return false;
 	}
 
-	public function getHardness() {
+	/**
+	 * @return float
+	 */
+	public function getHardness(){
 		return 0.4;
 	}
 
+	/**
+	 * @param Entity $entity
+	 */
 	public function onEntityCollide(Entity $entity){
 		$entity->resetFallDistance();
 		$entity->onGround = true;
 	}
 
-	protected function recalculateBoundingBox() {
+	/**
+	 * @return null|AxisAlignedBB
+	 */
+	protected function recalculateBoundingBox(){
 
-		$f = 0.1875;
+		$f = 0.125;
 
 		if($this->meta === 2){
 			return new AxisAlignedBB(
@@ -103,6 +126,18 @@ class Ladder extends Transparent{
 	}
 
 
+	/**
+	 * @param Item        $item
+	 * @param Block       $block
+	 * @param Block       $target
+	 * @param int         $face
+	 * @param float       $fx
+	 * @param float       $fy
+	 * @param float       $fz
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		if($target->isTransparent() === false){
 			$faces = [
@@ -122,6 +157,11 @@ class Ladder extends Transparent{
 		return false;
 	}
 
+	/**
+	 * @param int $type
+	 *
+	 * @return bool|int
+	 */
 	public function onUpdate($type){
 		$faces = [
 			2 => 3,
@@ -129,9 +169,14 @@ class Ladder extends Transparent{
 			4 => 5,
 			5 => 4,
 		];
+		/*if($this->getSide(0)->getId() === self::AIR){ //Replace with common break method
+			Server::getInstance()->api->entity->drop($this, Item::get(LADDER, 0, 1));
+			$this->getLevel()->setBlock($this, new Air(), true, true, true);
+			return Level::BLOCK_UPDATE_NORMAL;
+			}*/
 		if($type === Level::BLOCK_UPDATE_NORMAL){
-			if(isset($faces[$this->meta])) {
-				if ($this->getSide($faces[$this->meta])->getId() === self::AIR) {
+			if(isset($faces[$this->meta])){
+				if($this->getSide($faces[$this->meta])->getId() === self::AIR){
 					$this->getLevel()->useBreakOn($this);
 				}
 				return Level::BLOCK_UPDATE_NORMAL;
@@ -139,12 +184,20 @@ class Ladder extends Transparent{
 		}
 		return false;
 	}
-	
+
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_AXE;
 	}
 
-	public function getDrops(Item $item) : array {
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
+	public function getDrops(Item $item) : array{
 		return [
 			[$this->id, 0, 1],
 		];

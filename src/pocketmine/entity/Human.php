@@ -41,12 +41,11 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\AddPlayerPacket;
-use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\Player;
 use pocketmine\utils\UUID;
 
-class Human extends Creature implements ProjectileSource, InventoryHolder{
-	
+class Human extends Creature implements ProjectileSource, InventoryHolder {
+
 	const DATA_PLAYER_FLAG_SLEEP = 1;
 	const DATA_PLAYER_FLAG_DEAD = 2; //TODO: CHECK
 
@@ -56,7 +55,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 	/** @var PlayerInventory */
 	protected $inventory;
-	
+
 	/** @var EnderChestInventory */
 	protected $enderChestInventory;
 
@@ -84,10 +83,16 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	protected $xpSeed;
 	protected $xpCooldown = 0;
 
+	/**
+	 * @return mixed
+	 */
 	public function getSkinData(){
 		return $this->skin;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getSkinId(){
 		return $this->skinId;
 	}
@@ -115,15 +120,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->skinId = $skinId;
 	}
 
-	public function jump(){
-		parent::jump();
-		if($this->isSprinting()){
-			$this->exhaust(0.8, PlayerExhaustEvent::CAUSE_SPRINT_JUMPING);
-		}else{
-			$this->exhaust(0.2, PlayerExhaustEvent::CAUSE_JUMPING);
-		}
-	}
-
+	/**
+	 * @return float
+	 */
 	public function getFood() : float{
 		return $this->attributeMap->getAttribute(Attribute::HUNGER)->getValue();
 	}
@@ -152,10 +151,16 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getMaxFood() : float{
 		return $this->attributeMap->getAttribute(Attribute::HUNGER)->getMaxValue();
 	}
 
+	/**
+	 * @param float $amount
+	 */
 	public function addFood(float $amount){
 		$attr = $this->attributeMap->getAttribute(Attribute::HUNGER);
 		$amount += $attr->getValue();
@@ -163,6 +168,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->setFood($amount);
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getSaturation() : float{
 		return $this->attributeMap->getAttribute(Attribute::SATURATION)->getValue();
 	}
@@ -179,11 +187,17 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->attributeMap->getAttribute(Attribute::SATURATION)->setValue($saturation);
 	}
 
+	/**
+	 * @param float $amount
+	 */
 	public function addSaturation(float $amount){
 		$attr = $this->attributeMap->getAttribute(Attribute::SATURATION);
 		$attr->setValue($attr->getValue() + $amount, true);
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getExhaustion() : float{
 		return $this->attributeMap->getAttribute(Attribute::EXHAUSTION)->getValue();
 	}
@@ -235,10 +249,18 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		return $ev->getAmount();
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getXpLevel() : int{
 		return (int) $this->attributeMap->getAttribute(Attribute::EXPERIENCE_LEVEL)->getValue();
 	}
 
+	/**
+	 * @param int $level
+	 *
+	 * @return bool
+	 */
 	public function setXpLevel(int $level) : bool{
 		$this->server->getPluginManager()->callEvent($ev = new PlayerExperienceChangeEvent($this, $level, $this->getXpProgress()));
 		if(!$ev->isCancelled()){
@@ -248,23 +270,44 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		return false;
 	}
 
+	/**
+	 * @param int $level
+	 *
+	 * @return bool
+	 */
 	public function addXpLevel(int $level) : bool{
 		return $this->setXpLevel($this->getXpLevel() + $level);
 	}
 
+	/**
+	 * @param int $level
+	 *
+	 * @return bool
+	 */
 	public function takeXpLevel(int $level) : bool{
 		return $this->setXpLevel($this->getXpLevel() - $level);
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getXpProgress() : float{
 		return $this->attributeMap->getAttribute(Attribute::EXPERIENCE)->getValue();
 	}
 
+	/**
+	 * @param float $progress
+	 *
+	 * @return bool
+	 */
 	public function setXpProgress(float $progress) : bool{
 		$this->attributeMap->getAttribute(Attribute::EXPERIENCE)->setValue($progress);
 		return true;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getTotalXp() : int{
 		return $this->totalXp;
 	}
@@ -272,7 +315,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	/**
 	 * Changes the total exp of a player
 	 *
-	 * @param int $xp
+	 * @param int  $xp
 	 * @param bool $syncLevel This will reset the level to be in sync with the total. Usually you don't want to do this,
 	 *                        because it'll mess up use of xp in anvils and enchanting tables.
 	 *
@@ -320,27 +363,51 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		return false;
 	}
 
+	/**
+	 * @param int  $xp
+	 * @param bool $syncLevel
+	 *
+	 * @return bool
+	 */
 	public function addXp(int $xp, bool $syncLevel = false) : bool{
 		return $this->setTotalXp($this->totalXp + $xp, $syncLevel);
 	}
 
+	/**
+	 * @param int  $xp
+	 * @param bool $syncLevel
+	 *
+	 * @return bool
+	 */
 	public function takeXp(int $xp, bool $syncLevel = false) : bool{
 		return $this->setTotalXp($this->totalXp - $xp, $syncLevel);
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getRemainderXp() : int{
 		return self::getLevelXpRequirement($this->getXpLevel()) - $this->getFilledXp();
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getFilledXp() : int{
 		return self::getLevelXpRequirement($this->getXpLevel()) * $this->getXpProgress();
 	}
 
+	/**
+	 * @return float
+	 */
 	public function recalculateXpProgress() : float{
 		$this->setXpProgress($progress = $this->getRemainderXp() / self::getLevelXpRequirement($this->getXpLevel()));
 		return $progress;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getXpSeed() : int{
 		//TODO: use this for randomizing enchantments in enchanting tables
 		return $this->xpSeed;
@@ -350,6 +417,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->xpCooldown = microtime(true);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canPickupXp() : bool{
 		return microtime(true) - $this->xpCooldown > 0.5;
 	}
@@ -425,18 +495,30 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		return [$level, $progress];
 	}
 
+	/**
+	 * @return PlayerInventory
+	 */
 	public function getInventory(){
 		return $this->inventory;
 	}
-	
+
+	/**
+	 * @return EnderChestInventory
+	 */
 	public function getEnderChestInventory(){
 		return $this->enderChestInventory;
 	}
 
+	/**
+	 * @return FloatingInventory
+	 */
 	public function getFloatingInventory(){
 		return $this->floatingInventory;
 	}
 
+	/**
+	 * @return SimpleTransactionQueue
+	 */
 	public function getTransactionQueue(){
 		//Is creating the transaction queue ondemand a good idea? I think only if it's destroyed afterwards. hmm...
 		if($this->transactionQueue === null){
@@ -518,11 +600,16 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->xpSeed = $this->namedtag["XpSeed"];
 	}
 
-
+	/**
+	 * @return int
+	 */
 	public function getAbsorption() : int{
 		return $this->attributeMap->getAttribute(Attribute::ABSORPTION)->getValue();
 	}
 
+	/**
+	 * @param int $absorption
+	 */
 	public function setAbsorption(int $absorption){
 		$this->attributeMap->getAttribute(Attribute::ABSORPTION)->setValue($absorption);
 	}
@@ -540,62 +627,66 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->attributeMap->addAttribute(Attribute::getAttribute(Attribute::ABSORPTION));
 	}
 
+	/**
+	 * @param int $tickDiff
+	 * @param int $EnchantL
+	 *
+	 * @return bool
+	 */
 	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->getInventory() instanceof PlayerInventory){
 			$EnchantL = $this->getInventory()->getHelmet()->getEnchantmentLevel(Enchantment::TYPE_WATER_BREATHING);
 		}
 		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
 
-		$this->doFoodTick($tickDiff);
-
-		return $hasUpdate;
-	}
-
-	public function doFoodTick(int $tickDiff = 1){
 		if($this->isAlive()){
 			$food = $this->getFood();
 			$health = $this->getHealth();
-			$difficulty = $this->server->getDifficulty();
-
-			$this->foodTickTimer += $tickDiff;
-			if($this->foodTickTimer >= 80){
-				$this->foodTickTimer = 0;
-			}
-
-			if($difficulty === 0 and $this->foodTickTimer % 10 === 0){ //Peaceful
-				if($food < 20){
-					$this->addFood(1.0);
-				}
-				if($this->foodTickTimer % 20 === 0 and $health < $this->getMaxHealth()){
+			if($food >= 18){
+				$this->foodTickTimer++;
+				if($this->foodTickTimer >= 80 and $health < $this->getMaxHealth()){
 					$this->heal(1, new EntityRegainHealthEvent($this, 1, EntityRegainHealthEvent::CAUSE_SATURATION));
-				}
-			}
+					$this->exhaust(3.0, PlayerExhaustEvent::CAUSE_HEALTH_REGEN);
+					$this->foodTickTimer = 0;
 
-			if($this->foodTickTimer === 0){
-				if($food >= 18){
-					if($health < $this->getMaxHealth()){
-						$this->heal(1, new EntityRegainHealthEvent($this, 1, EntityRegainHealthEvent::CAUSE_SATURATION));
-						$this->exhaust(3.0, PlayerExhaustEvent::CAUSE_HEALTH_REGEN);
+				}
+			}elseif($food === 0){
+				$this->foodTickTimer++;
+				if($this->foodTickTimer >= 80){
+					$diff = $this->server->getDifficulty();
+					$can = false;
+					if($diff === 1){
+						$can = $health > 10;
+					}elseif($diff === 2){
+						$can = $health > 1;
+					}elseif($diff === 3){
+						$can = true;
 					}
-				}elseif($food <= 0){
-					if(($difficulty === 1 and $health > 10) or ($difficulty === 2 and $health > 1) or $difficulty === 3){
+					if($can){
 						$this->attack(1, new EntityDamageEvent($this, EntityDamageEvent::CAUSE_STARVATION, 1));
 					}
 				}
 			}
-
 			if($food <= 6){
 				if($this->isSprinting()){
 					$this->setSprinting(false);
 				}
 			}
 		}
+
+		return $hasUpdate;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName(){
 		return $this->getNameTag();
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getDrops(){
 		$drops = [];
 		if($this->inventory !== null){
@@ -638,7 +729,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 				}
 			}
 		}
-		
+
 		$this->namedtag->EnderChestInventory = new ListTag("EnderChestInventory", []);
 		$this->namedtag->Inventory->setTagType(NBT::TAG_Compound);
 		if($this->enderChestInventory !== null){
@@ -651,8 +742,8 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 		if(strlen($this->getSkinData()) > 0){
 			$this->namedtag->Skin = new CompoundTag("Skin", [
-				new StringTag("Data", $this->getSkinData()),
-				new StringTag("Name", $this->getSkinId())
+				"Data" => new StringTag("Data", $this->getSkinData()),
+				"Name" => new StringTag("Name", $this->getSkinId())
 			]);
 		}
 
@@ -669,6 +760,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->namedtag->foodTickTimer = new IntTag("foodTickTimer", $this->foodTickTimer);
 	}
 
+	/**
+	 * @param Player $player
+	 */
 	public function spawnTo(Player $player){
 		if(strlen($this->skin) < 64 * 32 * 4){
 			$e = new \InvalidStateException((new \ReflectionClass($this))->getShortName() . " must have a valid skin set");

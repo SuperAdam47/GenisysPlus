@@ -7,7 +7,7 @@
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
  * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
  * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -15,14 +15,20 @@
  *
  * @author Pocketmine Team
  * @link http://www.pocketmine.net
- * 
+ *
  *
 */
 
 namespace pocketmine\item;
 
 
-class PrismarineShard extends Item{
+class PrismarineShard extends Item {
+	/**
+	 * PrismarineShard constructor.
+	 *
+	 * @param int $meta
+	 * @param int $count
+	 */
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::PRISMARINE_SHARD, $meta, $count, "Prismarine Shard");
 	}

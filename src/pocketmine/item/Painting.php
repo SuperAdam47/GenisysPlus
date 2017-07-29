@@ -8,25 +8,46 @@
 namespace pocketmine\item;
 
 use pocketmine\block\Block;
+use pocketmine\entity\Painting as PaintingEntity;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
-use pocketmine\entity\Painting as PaintingEntity;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\Player;
 
-class Painting extends Item{
+class Painting extends Item {
+	/**
+	 * Painting constructor.
+	 *
+	 * @param int $meta
+	 * @param int $count
+	 */
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::PAINTING, 0, $count, "Painting");
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @param Level  $level
+	 * @param Player $player
+	 * @param Block  $block
+	 * @param Block  $target
+	 * @param        $face
+	 * @param        $fx
+	 * @param        $fy
+	 * @param        $fz
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
 		if($target->isTransparent() === false and $face > 1 and $block->isSolid() === false){
 			$faces = [
@@ -97,18 +118,18 @@ class Painting extends Item{
 			];
 
 			$nbt = new CompoundTag("", [
-				new StringTag("Motive", $data["Motive"]),
-				new ListTag("Pos", [
+				"Motive" => new StringTag("Motive", $data["Motive"]),
+				"Pos" => new ListTag("Pos", [
 					new DoubleTag("", $data["x"]),
 					new DoubleTag("", $data["y"]),
 					new DoubleTag("", $data["z"])
 				]),
-				new ListTag("Motion", [
+				"Motion" => new ListTag("Motion", [
 					new DoubleTag("", 0),
 					new DoubleTag("", 0),
 					new DoubleTag("", 0)
 				]),
-				new ListTag("Rotation", [
+				"Rotation" => new ListTag("Rotation", [
 					new FloatTag("", $data["yaw"]),
 					new FloatTag("", 0)
 				]),
@@ -122,7 +143,7 @@ class Painting extends Item{
 				$count = $item->getCount();
 				if(--$count <= 0){
 					$player->getInventory()->setItemInHand(Item::get(Item::AIR));
-					return;
+					return true;
 				}
 
 				$item->setCount($count);

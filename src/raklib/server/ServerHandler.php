@@ -66,7 +66,7 @@ class ServerHandler{
 		$this->server->pushMainToThreadPacket($buffer);
 		$this->server->shutdown();
 		$this->server->synchronized(function(){
-			if($this->server !== null){ #pthreadssucks
+			if($this->server !== null){
 				$this->server->wait(20000);
 			}
 		});

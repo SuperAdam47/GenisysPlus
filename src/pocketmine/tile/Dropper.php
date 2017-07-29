@@ -22,6 +22,7 @@
 namespace pocketmine\tile;
 
 use pocketmine\block\Block;
+use pocketmine\entity\Item as ItemEntity;
 use pocketmine\inventory\DropperInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
@@ -29,23 +30,27 @@ use pocketmine\level\Level;
 use pocketmine\level\particle\SmokeParticle;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\ShortTag;
-use pocketmine\entity\Item as ItemEntity;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
-
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 
-class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
+class Dropper extends Spawnable implements InventoryHolder, Container, Nameable {
 
 	/** @var DropperInventory */
 	protected $inventory;
 
 	protected $nextUpdate = 0;
 
+	/**
+	 * Dropper constructor.
+	 *
+	 * @param Level       $level
+	 * @param CompoundTag $nbt
+	 */
 	public function __construct(Level $level, CompoundTag $nbt){
 		parent::__construct($level, $nbt);
 		$this->inventory = new DropperInventory($this);
@@ -154,14 +159,23 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 		return $this->inventory;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return isset($this->namedtag->CustomName) ? $this->namedtag->CustomName->getValue() : "Dropper";
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasName(){
 		return isset($this->namedtag->CustomName);
 	}
 
+	/**
+	 * @param void $str
+	 */
 	public function setName($str){
 		if($str === ""){
 			unset($this->namedtag->CustomName);
@@ -171,6 +185,9 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 		$this->namedtag->CustomName = new StringTag("CustomName", $str);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getMotion(){
 		$meta = $this->getBlock()->getDamage();
 		switch($meta){
@@ -230,23 +247,23 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 			}
 
 			$nbt = new CompoundTag("", [
-				new ListTag("Pos", [
+				"Pos" => new ListTag("Pos", [
 					new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
 					new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
 					new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
 				]),
-				new ListTag("Motion", [
+				"Motion" => new ListTag("Motion", [
 					new DoubleTag("", $motion[0]),
 					new DoubleTag("", $motion[1]),
 					new DoubleTag("", $motion[2])
 				]),
-				new ListTag("Rotation", [
+				"Rotation" => new ListTag("Rotation", [
 					new FloatTag("", lcg_value() * 360),
 					new FloatTag("", 0)
 				]),
-				new ShortTag("Health", 5),
-				$needItem->nbtSerialize(-1, "Item"),
-				new ShortTag("PickupDelay", 10)
+				"Health" => new ShortTag("Health", 5),
+				"Item" => $needItem->nbtSerialize(-1, "Item"),
+				"PickupDelay" => new ShortTag("PickupDelay", 10)
 			]);
 
 			$f = 0.3;
@@ -260,6 +277,9 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 		}
 	}
 
+	/**
+	 * @return CompoundTag
+	 */
 	public function getSpawnCompound(){
 		$c = new CompoundTag("", [
 			new StringTag("id", Tile::DROPPER),

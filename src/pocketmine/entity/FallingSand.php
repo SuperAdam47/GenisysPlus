@@ -28,17 +28,15 @@ use pocketmine\block\SnowLayer;
 use pocketmine\event\entity\EntityBlockChangeEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-
 use pocketmine\item\Item as ItemItem;
 use pocketmine\level\sound\AnvilFallSound;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\AddEntityPacket;
-use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
 
-class FallingSand extends Entity{
+class FallingSand extends Entity {
 	const NETWORK_ID = 66;
 
 	const DATA_BLOCK_INFO = 20;
@@ -75,16 +73,32 @@ class FallingSand extends Entity{
 		$this->setDataProperty(self::DATA_BLOCK_INFO, self::DATA_TYPE_INT, $this->getBlock() | ($this->getDamage() << 8));
 	}
 
+	/**
+	 * @param Entity $entity
+	 *
+	 * @return bool
+	 */
 	public function canCollideWith(Entity $entity){
 		return false;
 	}
 
+	/**
+	 * @param float             $damage
+	 * @param EntityDamageEvent $source
+	 *
+	 * @return bool|void
+	 */
 	public function attack($damage, EntityDamageEvent $source){
 		if($source->getCause() === EntityDamageEvent::CAUSE_VOID){
 			parent::attack($damage, $source);
 		}
 	}
 
+	/**
+	 * @param $currentTick
+	 *
+	 * @return bool
+	 */
 	public function onUpdate($currentTick){
 
 		if($this->closed){
@@ -143,7 +157,8 @@ class FallingSand extends Entity{
 					if(!$ev->isCancelled()){
 						$this->getLevel()->setBlock($pos, $ev->getTo(), true);
 						if($ev->getTo() instanceof Anvil){
-							$this->getLevel()->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_ANVIL_FALL);
+							$sound = new AnvilFallSound($this);
+							$this->getLevel()->addSound($sound);
 							foreach($this->level->getNearbyEntities($this->boundingBox->grow(0.1, 0.1, 0.1), $this) as $entity){
 								$entity->scheduleUpdate();
 								if(!$entity->isAlive()){
@@ -169,10 +184,16 @@ class FallingSand extends Entity{
 		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getBlock(){
 		return $this->blockId;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getDamage(){
 		return $this->damage;
 	}
@@ -182,6 +203,9 @@ class FallingSand extends Entity{
 		$this->namedtag->Data = new ByteTag("Data", $this->damage);
 	}
 
+	/**
+	 * @param Player $player
+	 */
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->type = FallingSand::NETWORK_ID;

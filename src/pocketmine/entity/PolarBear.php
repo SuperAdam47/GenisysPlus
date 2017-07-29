@@ -1,50 +1,59 @@
 <?php
 
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
 */
 
 namespace pocketmine\entity;
 
-use pocketmine\network\protocol\AddEntityPacket;
-
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\Player;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\Player;
 
-
-class PolarBear extends Monster{
+class PolarBear extends Monster {
 	const NETWORK_ID = 28;
 
-	public $width = 1.3;
-	public $length = 0.6;//unknown
-	public $height = 1.4;
-
-	public $drag = 0.2;
-	public $gravity = 0.3;
+	public $width = 0.6;
+	public $length = 0.9;
+	public $height = 0;
 
 	public $dropExp = [5, 5];
-	
-	public function getName() : string{
-		$this->setMaxHealth(30);
+
+
+	/**
+	 * @return string
+	 */
+	public function getName(){
 		return "Polar Bear";
 	}
 
+	public function initEntity(){
+		$this->setMaxHealth(30);
+		parent::initEntity();
+	}
+
+	/**
+	 * @param Player $player
+	 */
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();
@@ -63,17 +72,12 @@ class PolarBear extends Monster{
 		parent::spawnTo($player);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getDrops(){
-		$cause = $this->lastDamageCause;
-		$drops = [];
-		if($cause instanceof EntityDamageByEntityEvent and $cause->getDamager() instanceof Player){
-			$drops = [];
-			if (mt_rand(1, 4) === 1) {
-				$drops[] = ItemItem::get(ItemItem::RAW_SALMON, 0, mt_rand(0, 2));//yes.. 0,2
-			}else{
-				$drops[] = ItemItem::get(ItemItem::RAW_FISH, 0, mt_rand(0, 2));//yes.. 0,2
-			}
-		}
+		$drops = [ItemItem::get(ItemItem::RAW_SALMON, 0, mt_rand(0, 2))];
+		$drops[] = ItemItem::get(ItemItem::RAW_FISH, 0, mt_rand(0, 2));
 		return $drops;
 	}
 }

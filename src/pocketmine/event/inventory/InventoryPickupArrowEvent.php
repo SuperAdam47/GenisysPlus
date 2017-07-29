@@ -25,8 +25,7 @@ use pocketmine\entity\Arrow;
 use pocketmine\event\Cancellable;
 use pocketmine\inventory\Inventory;
 
-class InventoryPickupArrowEvent extends InventoryEvent implements Cancellable{
-
+class InventoryPickupArrowEvent extends InventoryEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/** @var Arrow */
@@ -46,13 +45,6 @@ class InventoryPickupArrowEvent extends InventoryEvent implements Cancellable{
 	 */
 	public function getArrow(){
 		return $this->arrow;
-	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "InventoryPickupArrowEvent";
 	}
 
 }

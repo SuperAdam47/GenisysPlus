@@ -32,8 +32,7 @@ use pocketmine\Player;
  *
  * The message contains a slash at the start
  */
-class PlayerCommandPreprocessEvent extends PlayerEvent implements Cancellable{
-
+class PlayerCommandPreprocessEvent extends PlayerEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/** @var string */
@@ -68,13 +67,6 @@ class PlayerCommandPreprocessEvent extends PlayerEvent implements Cancellable{
 	 */
 	public function setPlayer(Player $player){
 		$this->player = $player;
-	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PlayerCommandPreprocessEvent";
 	}
 
 }

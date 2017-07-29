@@ -30,7 +30,7 @@ use pocketmine\scheduler\PluginTask;
 use pocketmine\scheduler\TaskHandler;
 use pocketmine\tile\Tile;
 
-abstract class Timings{
+abstract class Timings {
 
 	/** @var TimingsHandler */
 	public static $fullTickTimer;
@@ -105,7 +105,7 @@ abstract class Timings{
 	/** @var TimingsHandler */
 	public static $playerCommandTimer;
 
-    /** @var TimingsHandler */
+	/** @var TimingsHandler */
 	public static $craftingDataCacheRebuildTimer;
 
 	/** @var TimingsHandler[] */
@@ -162,7 +162,7 @@ abstract class Timings{
 		self::$schedulerAsyncTimer = new TimingsHandler("** Scheduler - Async Tasks");
 
 		self::$playerCommandTimer = new TimingsHandler("** playerCommand");
-        self::$craftingDataCacheRebuildTimer = new TimingsHandler("** craftingDataCacheRebuild");
+		self::$craftingDataCacheRebuildTimer = new TimingsHandler("** craftingDataCacheRebuild");
 
 	}
 

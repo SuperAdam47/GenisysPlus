@@ -17,6 +17,7 @@
  * 
  *
 */
+
 namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
@@ -24,7 +25,7 @@ namespace pocketmine\network\protocol;
 use pocketmine\entity\Attribute;
 
 
-class UpdateAttributesPacket extends DataPacket{
+class UpdateAttributesPacket extends DataPacket {
 
 	const NETWORK_ID = Info::UPDATE_ATTRIBUTES_PACKET;
 
@@ -33,10 +34,16 @@ class UpdateAttributesPacket extends DataPacket{
 	/** @var Attribute[] */
 	public $entries = [];
 
+	/**
+	 *
+	 */
 	public function decode(){
 
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putEntityId($this->entityId);
@@ -48,6 +55,13 @@ class UpdateAttributesPacket extends DataPacket{
 			$this->putLFloat($entry->getDefaultValue());
 			$this->putString($entry->getName());
 		}
+	}
+
+	/**
+	 * @return PacketName|string
+	 */
+	public function getName(){
+		return "UpdateAttributesPacket";
 	}
 
 }

@@ -24,22 +24,33 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
-
 use pocketmine\network\protocol\SetDifficultyPacket;
 use pocketmine\Server;
 
 
-class DifficultyCommand extends VanillaCommand{
+class DifficultyCommand extends VanillaCommand {
 
+	/**
+	 * DifficultyCommand constructor.
+	 *
+	 * @param $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.difficulty.description",
-			"%pocketmine.command.difficulty.usage"
+			"%commands.difficulty.usage"
 		);
 		$this->setPermission("pocketmine.command.difficulty");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;

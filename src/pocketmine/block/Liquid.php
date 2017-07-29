@@ -28,25 +28,38 @@ use pocketmine\level\Level;
 use pocketmine\level\particle\SmokeParticle;
 use pocketmine\level\sound\FizzSound;
 use pocketmine\math\Vector3;
-use pocketmine\network\protocol\LevelEventPacket;
 
-abstract class Liquid extends Transparent{
+abstract class Liquid extends Transparent {
 
 	/** @var Vector3 */
 	private $temporalVector = null;
 
+	/**
+	 * @return bool
+	 */
 	public function hasEntityCollision(){
 		return true;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return bool
+	 */
 	public function isBreakable(Item $item){
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeReplaced(){
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isSolid(){
 		return false;
 	}
@@ -55,6 +68,9 @@ abstract class Liquid extends Transparent{
 	public $isOptimalFlowDirection = [0, 0, 0, 0];
 	public $flowCost = [0, 0, 0, 0];
 
+	/**
+	 * @return float|int
+	 */
 	public function getFluidHeightPercent(){
 		$d = $this->meta;
 		if($d >= 8){
@@ -64,6 +80,11 @@ abstract class Liquid extends Transparent{
 		return ($d + 1) / 9;
 	}
 
+	/**
+	 * @param Vector3 $pos
+	 *
+	 * @return int
+	 */
 	protected function getFlowDecay(Vector3 $pos){
 		if(!($pos instanceof Block)){
 			$pos = $this->getLevel()->getBlock($pos);
@@ -76,6 +97,11 @@ abstract class Liquid extends Transparent{
 		}
 	}
 
+	/**
+	 * @param Vector3 $pos
+	 *
+	 * @return int
+	 */
 	protected function getEffectiveFlowDecay(Vector3 $pos){
 		if(!($pos instanceof Block)){
 			$pos = $this->getLevel()->getBlock($pos);
@@ -94,6 +120,9 @@ abstract class Liquid extends Transparent{
 		return $decay;
 	}
 
+	/**
+	 * @return Vector3
+	 */
 	public function getFlowVector(){
 		$vector = new Vector3(0, 0, 0);
 
@@ -173,6 +202,10 @@ abstract class Liquid extends Transparent{
 		return $vector->normalize();
 	}
 
+	/**
+	 * @param Entity  $entity
+	 * @param Vector3 $vector
+	 */
 	public function addVelocityToEntity(Entity $entity, Vector3 $vector){
 		$flow = $this->getFlowVector();
 		$vector->x += $flow->x;
@@ -180,6 +213,9 @@ abstract class Liquid extends Transparent{
 		$vector->z += $flow->z;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function tickRate() : int{
 		if($this instanceof Water){
 			return 5;
@@ -190,6 +226,9 @@ abstract class Liquid extends Transparent{
 		return 0;
 	}
 
+	/**
+	 * @param int $type
+	 */
 	public function onUpdate($type){
 		if($type === Level::BLOCK_UPDATE_NORMAL){
 			$this->checkForHarden();
@@ -310,6 +349,10 @@ abstract class Liquid extends Transparent{
 		}
 	}
 
+	/**
+	 * @param Block $block
+	 * @param       $newFlowDecay
+	 */
 	private function flowIntoBlock(Block $block, $newFlowDecay){
 		if($block->canBeFlowedInto()){
 			if($block instanceof Lava){
@@ -323,6 +366,13 @@ abstract class Liquid extends Transparent{
 		}
 	}
 
+	/**
+	 * @param Block $block
+	 * @param       $accumulatedCost
+	 * @param       $previousDirection
+	 *
+	 * @return int
+	 */
 	private function calculateFlowCost(Block $block, $accumulatedCost, $previousDirection){
 		$cost = 1000;
 
@@ -371,10 +421,16 @@ abstract class Liquid extends Transparent{
 		return $cost;
 	}
 
-	public function getHardness() {
+	/**
+	 * @return int
+	 */
+	public function getHardness(){
 		return 100;
 	}
 
+	/**
+	 * @return array
+	 */
 	private function getOptimalFlowDirections(){
 		if($this->temporalVector === null){
 			$this->temporalVector = new Vector3(0, 0, 0);
@@ -424,6 +480,12 @@ abstract class Liquid extends Transparent{
 		return $this->isOptimalFlowDirection;
 	}
 
+	/**
+	 * @param Vector3 $pos
+	 * @param         $decay
+	 *
+	 * @return int
+	 */
 	private function getSmallestFlowDecay(Vector3 $pos, $decay){
 		$blockDecay = $this->getFlowDecay($pos);
 
@@ -456,11 +518,19 @@ abstract class Liquid extends Transparent{
 		}
 	}
 
+	/**
+	 * @return null
+	 */
 	public function getBoundingBox(){
 		return null;
 	}
 
-	public function getDrops(Item $item) : array {
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
+	public function getDrops(Item $item) : array{
 		return [];
 	}
 
@@ -470,7 +540,7 @@ abstract class Liquid extends Transparent{
 	 * @param Vector3 $pos
 	 */
 	protected function triggerLavaMixEffects(Vector3 $pos){
-		$this->getLevel()->broadcastLevelEvent($pos,LevelEventPacket::EVENT_SOUND_FIZZ, 2.5 + mt_rand(0, 1000) / 1000 * 0.8);
+		$this->getLevel()->addSound(new FizzSound($pos->add(0.5, 0.5, 0.5), 2.5 + mt_rand(0, 1000) / 1000 * 0.8));
 
 		for($i = 0; $i < 8; ++$i){
 			$this->getLevel()->addParticle(new SmokeParticle($pos->add(mt_rand(0, 80) / 100, 0.5, mt_rand(0, 80) / 100)));

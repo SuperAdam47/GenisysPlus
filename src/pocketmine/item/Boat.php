@@ -21,40 +21,61 @@
 
 namespace pocketmine\item;
 
-use pocketmine\level\Level;
 use pocketmine\block\Block;
-use pocketmine\nbt\tag\IntTag;
-use pocketmine\Player;
+use pocketmine\entity\Boat as BoatEntity;
+use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\entity\Boat as BoatEntity;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\Player;
 
-class Boat extends Item{
+class Boat extends Item {
+	/**
+	 * Boat constructor.
+	 *
+	 * @param int $meta
+	 * @param int $count
+	 */
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::BOAT, $meta, $count, "Boat");
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @param Level  $level
+	 * @param Player $player
+	 * @param Block  $block
+	 * @param Block  $target
+	 * @param        $face
+	 * @param        $fx
+	 * @param        $fy
+	 * @param        $fz
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
 		$realPos = $block->getSide($face);
 
 		$boat = new BoatEntity($player->getLevel(), new CompoundTag("", [
-			new ListTag("Pos", [
+			"Pos" => new ListTag("Pos", [
 				new DoubleTag("", $realPos->getX() + 0.5),
 				new DoubleTag("", $realPos->getY()),
 				new DoubleTag("", $realPos->getZ() + 0.5)
 			]),
-			new ListTag("Motion", [
+			"Motion" => new ListTag("Motion", [
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0)
 			]),
-			new ListTag("Rotation", [
+			"Rotation" => new ListTag("Rotation", [
 				new FloatTag("", 0),
 				new FloatTag("", 0)
 			]),
@@ -62,7 +83,7 @@ class Boat extends Item{
 		]));
 		$boat->spawnToAll();
 
-		if($player->isSurvival()) {
+		if($player->isSurvival()){
 			$item = $player->getInventory()->getItemInHand();
 			$count = $item->getCount();
 			if(--$count <= 0){
@@ -73,7 +94,7 @@ class Boat extends Item{
 			$item->setCount($count);
 			$player->getInventory()->setItemInHand($item);
 		}
-		
+
 		return true;
 	}
 }

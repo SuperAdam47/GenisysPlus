@@ -26,24 +26,35 @@ use pocketmine\level\Level;
 use pocketmine\level\sound\DoorSound;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
-use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
 
 
-abstract class Door extends Transparent{
+abstract class Door extends Transparent implements ElectricalAppliance {
 
-	public function canBeActivated() : bool {
+	/**
+	 * @return bool
+	 */
+	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isSolid(){
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canPassThrough(){
 		return true;
 	}
 
+	/**
+	 * @return int
+	 */
 	private function getFullDamage(){
 		$damage = $this->getDamage();
 		$isUp = ($damage & 0x08) > 0;
@@ -61,7 +72,10 @@ abstract class Door extends Transparent{
 		return $down & 0x07 | ($isUp ? 8 : 0) | ($isRight ? 0x10 : 0);
 	}
 
-	protected function recalculateBoundingBox() {
+	/**
+	 * @return AxisAlignedBB
+	 */
+	protected function recalculateBoundingBox(){
 
 		$f = 0.1875;
 		$damage = $this->getFullDamage();
@@ -208,13 +222,18 @@ abstract class Door extends Transparent{
 		return $bb;
 	}
 
+	/**
+	 * @param int $type
+	 *
+	 * @return bool|int
+	 */
 	public function onUpdate($type){
 		if($type === Level::BLOCK_UPDATE_NORMAL){
 			if($this->getSide(Vector3::SIDE_DOWN)->getId() === self::AIR and $this->getSide(Vector3::SIDE_UP) instanceof Door){ //Block underneath the door was broken
-			
+
 				$this->getLevel()->setBlock($this, new Air(), false, false);
 				$this->getLevel()->setBlock($this->getSide(Vector3::SIDE_UP), new Air(), false);
-				
+
 				foreach($this->getDrops(Item::get(Item::DIAMOND_PICKAXE)) as $drop){
 					$this->getLevel()->dropItem($this, Item::get($drop[0], $drop[1], $drop[2]));
 				}
@@ -226,6 +245,18 @@ abstract class Door extends Transparent{
 		return false;
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Block       $block
+	 * @param Block       $target
+	 * @param int         $face
+	 * @param float       $fx
+	 * @param float       $fy
+	 * @param float       $fz
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		if($face === 1){
 			$blockUp = $this->getSide(Vector3::SIDE_UP);
@@ -256,6 +287,11 @@ abstract class Door extends Transparent{
 		return false;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return bool
+	 */
 	public function onBreak(Item $item){
 		if(($this->getDamage() & 0x08) === 0x08){
 			$down = $this->getSide(Vector3::SIDE_DOWN);
@@ -273,10 +309,19 @@ abstract class Door extends Transparent{
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isOpened(){
 		return (($this->getFullDamage() & 0x04) > 0);
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null){
 		if(($this->getDamage() & 0x08) === 0x08){ //Top
 			$down = $this->getSide(Vector3::SIDE_DOWN);
@@ -288,7 +333,7 @@ abstract class Door extends Transparent{
 					unset($players[$player->getLoaderId()]);
 				}
 
-				$this->level->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_DOOR);
+				$this->level->addSound(new DoorSound($this));
 				return true;
 			}
 
@@ -300,7 +345,7 @@ abstract class Door extends Transparent{
 			if($player instanceof Player){
 				unset($players[$player->getLoaderId()]);
 			}
-			$this->level->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_DOOR);
+			$this->level->addSound(new DoorSound($this));
 		}
 
 		return true;

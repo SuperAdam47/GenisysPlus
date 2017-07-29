@@ -23,9 +23,9 @@ namespace pocketmine\level\generator\biome;
 
 use pocketmine\block\Block;
 use pocketmine\level\ChunkManager;
+use pocketmine\level\generator\hell\HellBiome;
 use pocketmine\level\generator\normal\biome\MesaBiome;
 use pocketmine\level\generator\normal\biome\BeachBiome;
-use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\DesertBiome;
 use pocketmine\level\generator\normal\biome\ForestBiome;
 use pocketmine\level\generator\normal\biome\IcePlainsBiome;
@@ -34,14 +34,13 @@ use pocketmine\level\generator\normal\biome\OceanBiome;
 use pocketmine\level\generator\normal\biome\PlainBiome;
 use pocketmine\level\generator\normal\biome\RiverBiome;
 use pocketmine\level\generator\normal\biome\SmallMountainsBiome;
+use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\TaigaBiome;
-use pocketmine\level\generator\nether\biome\HellBiome;
+use pocketmine\level\generator\populator\Flower;
 use pocketmine\level\generator\populator\Populator;
 use pocketmine\utils\Random;
 
-use pocketmine\level\generator\normal\populator\Flower;
-
-abstract class Biome{
+abstract class Biome {
 
 	const OCEAN = 0;
 	const PLAINS = 1;
@@ -66,7 +65,7 @@ abstract class Biome{
 	const SMALL_MOUNTAINS = 20;
 	const BIRCH_FOREST = 27;
 	const BIRCH_FOREST_HILLS = 28;
-	const ROOFED_FOREST = 29;	
+	const ROOFED_FOREST = 29;
 	const COLD_TAIGA = 30;
 	const COLD_TAIGA_HILLS = 31;
 	const MEGA_TAIGA = 32;
@@ -77,7 +76,7 @@ abstract class Biome{
 	const MESA = 37;
 	const MESA_PLATEAU_F = 38;
 	const MESA_PLATEAU = 39;
-	
+
 	const VOID = 127;
 
 	const MAX_BIOMES = 256;
@@ -98,6 +97,10 @@ abstract class Biome{
 	protected $rainfall = 0.5;
 	protected $temperature = 0.5;
 
+	/**
+	 * @param       $id
+	 * @param Biome $biome
+	 */
 	protected static function register($id, Biome $biome){
 		self::$biomes[(int) $id] = $biome;
 		$biome->setId((int) $id);
@@ -126,7 +129,7 @@ abstract class Biome{
 		self::register(self::TAIGA, new TaigaBiome());
 		self::register(self::SWAMP, new SwampBiome());
 		self::register(self::RIVER, new RiverBiome());
-		
+
 		self::register(self::BEACH, new BeachBiome());
 		self::register(self::MESA, new MesaBiome());
 
@@ -152,26 +155,44 @@ abstract class Biome{
 		$this->populators = [];
 	}
 
+	/**
+	 * @param Populator $populator
+	 */
 	public function addPopulator(Populator $populator){
 		$this->populators[get_class($populator)] = $populator;
 	}
 
+	/**
+	 * @param $class
+	 */
 	public function removePopulator($class){
 		if(isset($this->populators[$class])){
 			unset($this->populators[$class]);
 		}
 	}
 
+	/**
+	 * @param ChunkManager $level
+	 * @param              $chunkX
+	 * @param              $chunkZ
+	 * @param Random       $random
+	 */
 	public function populateChunk(ChunkManager $level, $chunkX, $chunkZ, Random $random){
 		foreach($this->populators as $populator){
 			$populator->populate($level, $chunkX, $chunkZ, $random);
 		}
 	}
 
+	/**
+	 * @return Populator[]
+	 */
 	public function getPopulators(){
 		return $this->populators;
 	}
 
+	/**
+	 * @param $id
+	 */
 	public function setId($id){
 		if(!$this->registered){
 			$this->registered = true;
@@ -193,6 +214,10 @@ abstract class Biome{
 		return $this->maxElevation;
 	}
 
+	/**
+	 * @param $min
+	 * @param $max
+	 */
 	public function setElevation($min, $max){
 		$this->minElevation = $min;
 		$this->maxElevation = $max;
@@ -212,10 +237,16 @@ abstract class Biome{
 		$this->groundCover = $covers;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getTemperature(){
 		return $this->temperature;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getRainfall(){
 		return $this->rainfall;
 	}

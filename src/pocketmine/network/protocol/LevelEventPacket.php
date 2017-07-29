@@ -23,7 +23,7 @@ namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
 
-class LevelEventPacket extends DataPacket{
+class LevelEventPacket extends DataPacket {
 
 	const NETWORK_ID = Info::LEVEL_EVENT_PACKET;
 
@@ -40,34 +40,28 @@ class LevelEventPacket extends DataPacket{
 	const EVENT_SOUND_DOOR_BUMP = 1010;
 
 	const EVENT_SOUND_DOOR_CRASH = 1012;
-
 	const EVENT_SOUND_ENDERMAN_TELEPORT = 1018;
 
-	const EVENT_SOUND_ANVIL_BREAK = 1020;
+	const EVENT_SOUND_ANVIL_BREAK = 1020; //This sound is played on the anvil's final use, NOT when the block is broken.
 	const EVENT_SOUND_ANVIL_USE = 1021;
 	const EVENT_SOUND_ANVIL_FALL = 1022;
 
 	const EVENT_SOUND_POP = 1030;
 
 	const EVENT_SOUND_PORTAL = 1032;
-
 	const EVENT_SOUND_ITEMFRAME_ADD_ITEM = 1040;
 	const EVENT_SOUND_ITEMFRAME_REMOVE = 1041;
 	const EVENT_SOUND_ITEMFRAME_PLACE = 1042;
 	const EVENT_SOUND_ITEMFRAME_REMOVE_ITEM = 1043;
 	const EVENT_SOUND_ITEMFRAME_ROTATE_ITEM = 1044;
-
 	const EVENT_SOUND_CAMERA = 1050;
 	const EVENT_SOUND_ORB = 1051;
-
 	const EVENT_PARTICLE_SHOOT = 2000;
 	const EVENT_PARTICLE_DESTROY = 2001;
-	const EVENT_PARTICLE_SPLASH = 2002;
+	const EVENT_PARTICLE_SPLASH = 2002; //This is actually the splash potion sound with particles
 	const EVENT_PARTICLE_EYE_DESPAWN = 2003;
 	const EVENT_PARTICLE_SPAWN = 2004;
-
 	const EVENT_GUARDIAN_CURSE = 2006;
-
 	const EVENT_PARTICLE_BLOCK_FORCE_FIELD = 2008;
 
 	const EVENT_PARTICLE_PUNCH_BLOCK = 2014;
@@ -87,9 +81,6 @@ class LevelEventPacket extends DataPacket{
 	const EVENT_CAULDRON_TAKE_WATER = 3507;
 	const EVENT_CAULDRON_ADD_DYE = 3508;
 
-	const EVENT_BLOCK_START_BREAK = 3600;
-	const EVENT_BLOCK_STOP_BREAK = 3601;
-
 	const EVENT_SET_DATA = 4000;
 
 	const EVENT_PLAYERS_SLEEPING = 9800;
@@ -102,10 +93,16 @@ class LevelEventPacket extends DataPacket{
 	public $z = 0;
 	public $data;
 
+	/**
+	 *
+	 */
 	public function decode(){
 
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putVarInt($this->evid);

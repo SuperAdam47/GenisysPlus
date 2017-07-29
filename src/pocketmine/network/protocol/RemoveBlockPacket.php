@@ -24,7 +24,7 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class RemoveBlockPacket extends DataPacket{
+class RemoveBlockPacket extends DataPacket {
 
 	const NETWORK_ID = Info::REMOVE_BLOCK_PACKET;
 
@@ -32,12 +32,25 @@ class RemoveBlockPacket extends DataPacket{
 	public $y;
 	public $z;
 
+	/**
+	 *
+	 */
 	public function decode(){
 		$this->getBlockCoords($this->x, $this->y, $this->z);
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 
+	}
+
+	/**
+	 * @return PacketName|string
+	 */
+	public function getName(){
+		return "RemoveBlockPacket";
 	}
 
 }

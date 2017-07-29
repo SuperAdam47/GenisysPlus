@@ -22,43 +22,62 @@
 namespace pocketmine\block;
 
 use pocketmine\entity\Entity;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
-use pocketmine\item\enchantment\Enchantment;
 
-class Cobweb extends Flowable{
+class Cobweb extends Flowable {
 
 	protected $id = self::COBWEB;
 
-	public function __construct(){
-
+	/**
+	 * Cobweb constructor.
+	 */
+	public function __construct($meta = 0){
+		$this->meta = $meta;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasEntityCollision(){
 		return true;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Cobweb";
 	}
 
-	public function getHardness() {
+	/**
+	 * @return int
+	 */
+	public function getHardness(){
 		return 4;
 	}
 
-	public function diffusesSkyLight() : bool{
-		return true;
-	}
-
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_SHEARS;
 	}
 
+	/**
+	 * @param Entity $entity
+	 */
 	public function onEntityCollide(Entity $entity){
 		$entity->resetFallDistance();
 	}
 
-	public function getDrops(Item $item) : array {
+	/**
+	 * @param Item $item
+	 *
+	 * @return array
+	 */
+	public function getDrops(Item $item) : array{
 		if($item->isShears()){
 			return [
 				[Item::COBWEB, 0, 1],

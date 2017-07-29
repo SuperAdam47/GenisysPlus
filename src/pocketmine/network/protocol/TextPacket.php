@@ -24,7 +24,7 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class TextPacket extends DataPacket{
+class TextPacket extends DataPacket {
 
 	const NETWORK_ID = Info::TEXT_PACKET;
 
@@ -35,21 +35,22 @@ class TextPacket extends DataPacket{
 	const TYPE_TIP = 4;
 	const TYPE_SYSTEM = 5;
 	const TYPE_WHISPER = 6;
-	const TYPE_ANNOUNCEMENT = 7;
 
 	public $type;
 	public $source;
 	public $message;
 	public $parameters = [];
 
+	/**
+	 *
+	 */
 	public function decode(){
 		$this->type = $this->getByte();
 		switch($this->type){
 			case self::TYPE_POPUP:
 			case self::TYPE_CHAT:
+				/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_WHISPER:
-			/** @noinspection PhpMissingBreakStatementInspection */
-			case self::TYPE_ANNOUNCEMENT:
 				$this->source = $this->getString();
 			case self::TYPE_RAW:
 			case self::TYPE_TIP:
@@ -66,15 +67,17 @@ class TextPacket extends DataPacket{
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putByte($this->type);
 		switch($this->type){
 			case self::TYPE_POPUP:
 			case self::TYPE_CHAT:
+				/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_WHISPER:
-			/** @noinspection PhpMissingBreakStatementInspection */
-			case self::TYPE_ANNOUNCEMENT:
 				$this->putString($this->source);
 			case self::TYPE_RAW:
 			case self::TYPE_TIP:
@@ -93,7 +96,7 @@ class TextPacket extends DataPacket{
 
 	/**
 	 * @return PacketName|string
-     */
+	 */
 	public function getName(){
 		return "TextPacket";
 	}

@@ -24,8 +24,8 @@ namespace pocketmine\event\plugin;
 
 use pocketmine\plugin\Plugin;
 
-class PluginEnableEvent extends PluginEvent{
 
+class PluginEnableEvent extends PluginEvent {
 	public static $handlerList = null;
 
 	/**
@@ -34,12 +34,4 @@ class PluginEnableEvent extends PluginEvent{
 	public function __construct(Plugin $plugin){
 		parent::__construct($plugin);
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PluginEnableEvent";
-	}
-
 }

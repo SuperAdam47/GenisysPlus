@@ -25,7 +25,7 @@ use LogLevel;
 use pocketmine\Thread;
 use pocketmine\Worker;
 
-class MainLogger extends \AttachableThreadedLogger{
+class MainLogger extends \AttachableThreadedLogger {
 	protected $logFile;
 	protected $logStream;
 	protected $shutdown;
@@ -33,7 +33,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	private $logResource;
 	/** @var MainLogger */
 	public static $logger = null;
-	
+
 	private $consoleCallback;
 
 	/** Extra Settings */
@@ -43,11 +43,17 @@ class MainLogger extends \AttachableThreadedLogger{
 	public $shouldRecordMsg = false;
 	private $lastGet = 0;
 
+	/**
+	 * @param $b
+	 */
 	public function setSendMsg($b){
 		$this->shouldRecordMsg = $b;
 		$this->lastGet = time();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getMessages(){
 		$msg = $this->shouldSendMsg;
 		$this->shouldSendMsg = "";
@@ -63,7 +69,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	 */
 	public function __construct($logFile, $logDebug = false){
 		if(static::$logger instanceof MainLogger){
-			throw new \RuntimeException("MainLogger has been already created");
+			throw new \RuntimeException("主记录器已被创建");
 		}
 		static::$logger = $this;
 		touch($logFile);
@@ -80,38 +86,66 @@ class MainLogger extends \AttachableThreadedLogger{
 		return static::$logger;
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function emergency($message, $name = "致命错误"){
 		$this->send($message, \LogLevel::EMERGENCY, $name, TextFormat::RED);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function alert($message, $name = "二级警告"){
 		$this->send($message, \LogLevel::ALERT, $name, TextFormat::RED);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function critical($message, $name = "严重错误"){
 		$this->send($message, \LogLevel::CRITICAL, $name, TextFormat::RED);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function error($message, $name = "错误"){
 		$this->send($message, \LogLevel::ERROR, $name, TextFormat::DARK_RED);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function warning($message, $name = "一级警告"){
 		$this->send($message, \LogLevel::WARNING, $name, TextFormat::YELLOW);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function notice($message, $name = "注意"){
 		$this->send(TextFormat::BOLD . $message, \LogLevel::NOTICE, $name, TextFormat::AQUA);
 	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function info($message, $name = "信息"){
 		$this->send($message, \LogLevel::INFO, $name, TextFormat::WHITE);
 	}
-	
-	public function developer($message, $name = "开发工具"){
-		$this->send($message, \LogLevel::DEVELOPER, $name, TextFormat::GOLD);
-	}
 
+	/**
+	 * @param string $message
+	 * @param string $name
+	 */
 	public function debug($message, $name = "程序除错"){
 		if($this->logDebug === false){
 			return;
@@ -126,6 +160,10 @@ class MainLogger extends \AttachableThreadedLogger{
 		$this->logDebug = (bool) $logDebug;
 	}
 
+	/**
+	 * @param \Throwable $e
+	 * @param null       $trace
+	 */
 	public function logException(\Throwable $e, $trace = null){
 		if($trace === null){
 			$trace = $e->getTrace();
@@ -163,12 +201,16 @@ class MainLogger extends \AttachableThreadedLogger{
 			$errstr = substr($errstr, 0, $pos);
 		}
 		$errfile = \pocketmine\cleanPath($errfile);
-		$this->log($type, get_class($e) . ": \"$errstr\" ($errno) in \"$errfile\" at line $errline");
+		$this->log($type, get_class($e) . ": \"$errstr\" ($errno) 在 \"$errfile\" 的第 $errline 行");
 		foreach(@\pocketmine\getTrace(1, $trace) as $i => $line){
 			$this->debug($line);
 		}
 	}
 
+	/**
+	 * @param mixed  $level
+	 * @param string $message
+	 */
 	public function log($level, $message){
 		switch($level){
 			case LogLevel::EMERGENCY:
@@ -202,12 +244,18 @@ class MainLogger extends \AttachableThreadedLogger{
 		$this->shutdown = true;
 	}
 
+	/**
+	 * @param $message
+	 * @param $level
+	 * @param $prefix
+	 * @param $color
+	 */
 	protected function send($message, $level, $prefix, $color){
 		$now = time();
 
 		$thread = \Thread::getCurrentThread();
 		if($thread === null){
-			$threadName = "服务器线程";
+			$threadName = "服务器主线程";
 		}elseif($thread instanceof Thread or $thread instanceof Worker){
 			$threadName = $thread->getThreadName() . " thread";
 		}else{
@@ -222,7 +270,8 @@ class MainLogger extends \AttachableThreadedLogger{
 			}
 		}
 
-        $message = TextFormat::toANSI(TextFormat::AQUA . "[" . date("H:i:s", $now) . "] " . TextFormat::RESET . $color . "[" . $threadName . "/" . $prefix . "]:" . " " . $message . TextFormat::RESET);
+		$message = TextFormat::toANSI(TextFormat::AQUA . "[永成互联] " . TextFormat::RESET . $color . "[" . $threadName . "/" . $prefix . "]:" . " " . $message . TextFormat::RESET);
+		//$message = TextFormat::toANSI(TextFormat::AQUA . "[GenisysPlus]->[" . date("H:i:s", $now) . "] " . TextFormat::RESET . $color . "[$prefix]:" . " " . $message . TextFormat::RESET);
 		//$message = TextFormat::toANSI(TextFormat::AQUA . "[" . date("H:i:s") . "] ". TextFormat::RESET . $color ."<".$prefix . ">" . " " . $message . TextFormat::RESET);
 		$cleanMessage = TextFormat::clean($message);
 
@@ -248,6 +297,39 @@ class MainLogger extends \AttachableThreadedLogger{
 		}
 	}
 
+	/*public function run(){
+		$this->shutdown = false;
+		if($this->write){
+			$this->logResource = fopen($this->logFile, "a+b");
+			if(!is_resource($this->logResource)){
+				throw new \RuntimeException("Couldn't open log file");
+			}
+
+			while($this->shutdown === false){
+				if(!$this->write) {
+					fclose($this->logResource);
+					break;
+				}
+				$this->synchronized(function(){
+					while($this->logStream->count() > 0){
+						$chunk = $this->logStream->shift();
+						fwrite($this->logResource, $chunk);
+					}
+
+					$this->wait(25000);
+				});
+			}
+
+			if($this->logStream->count() > 0){
+				while($this->logStream->count() > 0){
+					$chunk = $this->logStream->shift();
+					fwrite($this->logResource, $chunk);
+				}
+			}
+
+			fclose($this->logResource);
+		}
+	}*/
 
 	public function run(){
 		$this->shutdown = false;
@@ -274,10 +356,16 @@ class MainLogger extends \AttachableThreadedLogger{
 		}
 	}
 
+	/**
+	 * @param $write
+	 */
 	public function setWrite($write){
 		$this->write = $write;
 	}
-	
+
+	/**
+	 * @param $callback
+	 */
 	public function setConsoleCallback($callback){
 		$this->consoleCallback = $callback;
 	}

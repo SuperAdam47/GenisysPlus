@@ -24,7 +24,7 @@ namespace pocketmine\permission;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginException;
 
-class PermissionAttachment{
+class PermissionAttachment {
 	/** @var PermissionRemovedExecutor */
 	private $removed = null;
 
@@ -89,9 +89,6 @@ class PermissionAttachment{
 		return $this->permissions;
 	}
 
-	/**
-	 * @return bool[]
-	 */
 	public function clearPermissions(){
 		$this->permissions = [];
 		$this->permissible->recalculatePermissions();

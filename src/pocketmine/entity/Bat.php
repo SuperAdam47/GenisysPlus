@@ -1,28 +1,15 @@
 <?php
 
-/*
+/**
+ * OpenGenisys Project
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
+ * @author PeratX
  */
 
 namespace pocketmine\entity;
 
-use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\level\format\FullChunk;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
@@ -49,13 +36,13 @@ class Bat extends FlyingAnimal{
 		parent::initEntity();
 	}
 
-	public function __construct(Level $level, CompoundTag $nbt){
+	public function __construct(FullChunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->isResting)){
 			$nbt->isResting = new ByteTag("isResting", 0);
 		}
-		parent::__construct($level, $nbt);
+		parent::__construct($chunk, $nbt);
 
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_RESTING, $this->isResting());
+		$this->setDataProperty(self::DATA_IS_RESTING, self::DATA_TYPE_BYTE, $this->isResting());
 	}
 
 	public function isResting() : int{

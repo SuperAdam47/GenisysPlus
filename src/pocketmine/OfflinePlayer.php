@@ -1,33 +1,37 @@
 <?php
 
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *  _______                                     ______  _
+ * /  ____ \                                   |  __  \| \
+ * | |    \_|              _                   | |__| || |
+ * | |   ___  ___  _  ___ (_) ___  __    _ ___ |  ____/| | _   _  ___
+ * | |  |_  |/(_)\| '/_  || |/___\(_)\  ///___\| |     | || | | |/___\
+ * | \___|| | |___| |  | || |_\_\   \ \// _\_\ | |     | || | | |_\_\
+ * \______/_|\___/|_|  |_||_|\___/   \ /  \___/|_|     |_||__/,_|\___/
+ *                                   //
+ *                                  (_)                Power by:
+ *                                                           Pocketmine-MP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+ * @由Pocketmine-MP团队创建，GenisysPlus项目组修改
+ * @链接 http://www.pocketmine.net/
+ * @链接 https://github.com/Tcanw/GenisysPlus
  *
 */
 
 namespace pocketmine;
 
 
-use pocketmine\metadata\MetadataValue;
 use pocketmine\metadata\Metadatable;
+use pocketmine\metadata\MetadataValue;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\Plugin;
 
-class OfflinePlayer implements IPlayer, Metadatable{
+class OfflinePlayer implements IPlayer, Metadatable {
 
 	private $name;
 	private $server;
@@ -47,22 +51,37 @@ class OfflinePlayer implements IPlayer, Metadatable{
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isOnline(){
 		return $this->getPlayer() !== null;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return $this->name;
 	}
 
+	/**
+	 * @return Server
+	 */
 	public function getServer(){
 		return $this->server;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isOp(){
 		return $this->server->isOp(strtolower($this->getName()));
 	}
 
+	/**
+	 * @param bool $value
+	 */
 	public function setOp($value){
 		if($value === $this->isOp()){
 			return;
@@ -75,10 +94,16 @@ class OfflinePlayer implements IPlayer, Metadatable{
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isBanned(){
 		return $this->server->getNameBans()->isBanned(strtolower($this->getName()));
 	}
 
+	/**
+	 * @param bool $value
+	 */
 	public function setBanned($value){
 		if($value === true){
 			$this->server->getNameBans()->addBan($this->getName(), null, null, null);
@@ -87,10 +112,16 @@ class OfflinePlayer implements IPlayer, Metadatable{
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isWhitelisted(){
 		return $this->server->isWhitelisted(strtolower($this->getName()));
 	}
 
+	/**
+	 * @param bool $value
+	 */
 	public function setWhitelisted($value){
 		if($value === true){
 			$this->server->addWhitelist(strtolower($this->getName()));
@@ -99,34 +130,64 @@ class OfflinePlayer implements IPlayer, Metadatable{
 		}
 	}
 
+	/**
+	 * @return Player
+	 */
 	public function getPlayer(){
 		return $this->server->getPlayerExact($this->getName());
 	}
 
+	/**
+	 * @return null
+	 */
 	public function getFirstPlayed(){
 		return $this->namedtag instanceof CompoundTag ? $this->namedtag["firstPlayed"] : null;
 	}
 
+	/**
+	 * @return null
+	 */
 	public function getLastPlayed(){
 		return $this->namedtag instanceof CompoundTag ? $this->namedtag["lastPlayed"] : null;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasPlayedBefore(){
 		return $this->namedtag instanceof CompoundTag;
 	}
 
+	/**
+	 * @param string        $metadataKey
+	 * @param MetadataValue $metadataValue
+	 */
 	public function setMetadata($metadataKey, MetadataValue $metadataValue){
 		$this->server->getPlayerMetadata()->setMetadata($this, $metadataKey, $metadataValue);
 	}
 
+	/**
+	 * @param string $metadataKey
+	 *
+	 * @return MetadataValue[]
+	 */
 	public function getMetadata($metadataKey){
 		return $this->server->getPlayerMetadata()->getMetadata($this, $metadataKey);
 	}
 
+	/**
+	 * @param string $metadataKey
+	 *
+	 * @return bool
+	 */
 	public function hasMetadata($metadataKey){
 		return $this->server->getPlayerMetadata()->hasMetadata($this, $metadataKey);
 	}
 
+	/**
+	 * @param string $metadataKey
+	 * @param Plugin $plugin
+	 */
 	public function removeMetadata($metadataKey, Plugin $plugin){
 		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
 	}

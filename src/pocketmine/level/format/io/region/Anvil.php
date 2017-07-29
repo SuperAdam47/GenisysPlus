@@ -19,9 +19,10 @@
  *
 */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace pocketmine\level\format\io\region;
+
 
 use pocketmine\level\format\Chunk;
 use pocketmine\level\format\io\ChunkException;
@@ -35,10 +36,15 @@ use pocketmine\Player;
 use pocketmine\utils\MainLogger;
 
 
-class Anvil extends McRegion{
+class Anvil extends McRegion {
 
 	const REGION_FILE_EXTENSION = "mca";
 
+	/**
+	 * @param Chunk $chunk
+	 *
+	 * @return string
+	 */
 	public function nbtSerialize(Chunk $chunk) : string{
 		$nbt = new CompoundTag("Level", []);
 		$nbt->xPos = new IntTag("xPos", $chunk->getX());
@@ -58,11 +64,11 @@ class Anvil extends McRegion{
 				continue;
 			}
 			$nbt->Sections[++$subChunks] = new CompoundTag(null, [
-				new ByteTag("Y", $y),
-				new ByteArrayTag("Blocks", ChunkUtils::reorderByteArray($subChunk->getBlockIdArray())), //Generic in-memory chunks are currently always XZY
-				new ByteArrayTag("Data", ChunkUtils::reorderNibbleArray($subChunk->getBlockDataArray())),
-				new ByteArrayTag("SkyLight", ChunkUtils::reorderNibbleArray($subChunk->getSkyLightArray(), "\xff")),
-				new ByteArrayTag("BlockLight", ChunkUtils::reorderNibbleArray($subChunk->getBlockLightArray()))
+				"Y" => new ByteTag("Y", $y),
+				"Blocks" => new ByteArrayTag("Blocks", ChunkUtils::reorderByteArray($subChunk->getBlockIdArray())), //Generic in-memory chunks are currently always XZY
+				"Data" => new ByteArrayTag("Data", ChunkUtils::reorderNibbleArray($subChunk->getBlockDataArray())),
+				"SkyLight" => new ByteArrayTag("SkyLight", ChunkUtils::reorderNibbleArray($subChunk->getSkyLightArray(), "\xff")),
+				"BlockLight" => new ByteArrayTag("BlockLight", ChunkUtils::reorderNibbleArray($subChunk->getBlockLightArray()))
 			]);
 		}
 
@@ -99,6 +105,11 @@ class Anvil extends McRegion{
 		return $writer->writeCompressed(ZLIB_ENCODING_DEFLATE, RegionLoader::$COMPRESSION_LEVEL);
 	}
 
+	/**
+	 * @param string $data
+	 *
+	 * @return null|Chunk
+	 */
 	public function nbtDeserialize(string $data){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
 		try{
@@ -127,7 +138,7 @@ class Anvil extends McRegion{
 			}
 
 			if(isset($chunk->BiomeColors)){
-				$biomeIds = ChunkUtils::convertBiomeColors($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
+				$biomeIds = ChunkUtils::convertBiomeColors($chunk->BiomeColors->getValue()); //Convert back to original format
 			}elseif(isset($chunk->Biomes)){
 				$biomeIds = $chunk->Biomes->getValue();
 			}else{
@@ -153,10 +164,16 @@ class Anvil extends McRegion{
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function getProviderName() : string{
 		return "anvil";
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getWorldHeight() : int{
 		//TODO: add world height options
 		return 256;

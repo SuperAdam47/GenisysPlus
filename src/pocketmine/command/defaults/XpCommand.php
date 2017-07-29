@@ -25,12 +25,17 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\level\sound\ExpPickupSound;
-use pocketmine\network\protocol\LevelEventPacket;
+use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class XpCommand extends VanillaCommand{
+class XpCommand extends VanillaCommand {
 
+	/**
+	 * XpCommand constructor.
+	 *
+	 * @param string $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
@@ -40,6 +45,13 @@ class XpCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.xp");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;
@@ -60,12 +72,12 @@ class XpCommand extends VanillaCommand{
 				$player->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 				return false;
 			}
-			if(strcasecmp(substr($args[0], -1), "L") == 0){ //Set Experience Level(with "L" after args[0])
+			if(strcasecmp(substr($args[0], -1), "L") == 0){
 				$level = (int) rtrim($args[0], "Ll");
 				if($level > 0){
 					$player->addXpLevel((int) $level);
 					$sender->sendMessage(new TranslationContainer("%commands.xp.success.levels", [$level, $name]));
-					$player->getLevel()->broadcastLevelEvent($player, LevelEventPacket::EVENT_SOUND_ORB, mt_rand(0, 1000));
+					$player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_LEVELUP);
 					return true;
 				}elseif($level < 0){
 					$player->takeXpLevel((int) -$level);
@@ -75,21 +87,20 @@ class XpCommand extends VanillaCommand{
 			}else{
 				if(($xp = (int) $args[0]) > 0){ //Set Experience
 					$player->addXp((int) $args[0]);
-					$player->getLevel()->broadcastLevelEvent($player, LevelEventPacket::EVENT_SOUND_ORB, mt_rand(0, 1000));
+					$player->getLevel()->addSound(new ExpPickupSound($player, mt_rand(0, 1000)));
 					$sender->sendMessage(new TranslationContainer("%commands.xp.success", [$name, $args[0]]));
 					return true;
-				}elseif($xp < 0){ //Stupid, but this lines up with vanilla behaviour, so...
+				}elseif($xp < 0){
 					$sender->sendMessage(new TranslationContainer("%commands.xp.failure.withdrawXp"));
 					return true;
 				}
 			}
-			//This statement will only be reached if the command failed
+
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 			return false;
 		}else{
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
 			return false;
 		}
-		return false;
 	}
 }

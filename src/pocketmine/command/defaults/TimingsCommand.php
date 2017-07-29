@@ -26,10 +26,15 @@ use pocketmine\event\TimingsHandler;
 use pocketmine\event\TranslationContainer;
 
 
-class TimingsCommand extends VanillaCommand{
+class TimingsCommand extends VanillaCommand {
 
 	public static $timingStart = 0;
 
+	/**
+	 * TimingsCommand constructor.
+	 *
+	 * @param $name
+	 */
 	public function __construct($name){
 		parent::__construct(
 			$name,
@@ -39,6 +44,13 @@ class TimingsCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.timings");
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string        $currentAlias
+	 * @param array         $args
+	 *
+	 * @return bool
+	 */
 	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;
@@ -125,7 +137,7 @@ class TimingsCommand extends VanillaCommand{
 
 
 				$sender->sendMessage(new TranslationContainer("pocketmine.command.timings.timingsUpload", ["http://paste.ubuntu.com/" . $matches[1] . "/"]));
-				$sender->sendMessage(new TranslationContainer("pocketmine.command.timings.timingsRead", ["http://mcpetimings.com/?url=" . $matches[1]]));
+				$sender->sendMessage(new TranslationContainer("pocketmine.command.timings.timingsRead", ["http://" . $sender->getServer()->getProperty("timings.host", "timings.pmmp.io") . "/?url=" . $matches[1]]));
 				fclose($fileTimings);
 			}else{
 				fclose($fileTimings);

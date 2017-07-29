@@ -26,9 +26,13 @@ use pocketmine\Server;
 /**
  * Class used to run async tasks in other threads.
  *
- * WARNING: Do not call PocketMine-MP API methods, or save objects from/on other Threads!!
+ * An AsyncTask does not have its own thread. It is queued into an AsyncPool and executed if there is an async worker
+ * with no AsyncTask running. Therefore, an AsyncTask SHOULD NOT execute for more than a few seconds. For tasks that
+ * run for a long time or infinitely, start another {@link \pocketmine\Thread} instead.
+ *
+ * WARNING: Do not call PocketMine-MP API methods, or save objects (and arrays containing objects) from/on other Threads!!
  */
-abstract class AsyncTask extends \Threaded implements \Collectable{
+abstract class AsyncTask extends \Threaded implements \Collectable {
 
 	/** @var AsyncWorker $worker */
 	public $worker = null;
@@ -45,6 +49,9 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 
 	private $isFinished = false;
 
+	/**
+	 * @return bool
+	 */
 	public function isGarbage() : bool{
 		return $this->isGarbage;
 	}
@@ -53,6 +60,9 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		$this->isGarbage = true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isFinished() : bool{
 		return $this->isFinished;
 	}
@@ -74,6 +84,9 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		//$this->setGarbage();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isCrashed(){
 		return $this->crashed;
 	}
@@ -89,6 +102,9 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		$this->cancelRun = true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasCancelledRun(){
 		return $this->cancelRun === true;
 	}
@@ -109,10 +125,16 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		$this->serialized = $serialize;
 	}
 
+	/**
+	 * @param $taskId
+	 */
 	public function setTaskId($taskId){
 		$this->taskId = $taskId;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getTaskId(){
 		return $this->taskId;
 	}
@@ -122,6 +144,7 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	 * You have to initialize this in some way from the task on run
 	 *
 	 * @param string $identifier
+	 *
 	 * @return mixed
 	 */
 	public function getFromThreadStore($identifier){

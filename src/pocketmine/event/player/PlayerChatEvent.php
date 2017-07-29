@@ -28,8 +28,7 @@ use pocketmine\Server;
 /**
  * Called when a player chats something
  */
-class PlayerChatEvent extends PlayerEvent implements Cancellable{
-
+class PlayerChatEvent extends PlayerEvent implements Cancellable {
 	public static $handlerList = null;
 
 	/** @var string */
@@ -43,6 +42,14 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable{
 	 */
 	protected $recipients = [];
 
+	/**
+	 * PlayerChatEvent constructor.
+	 *
+	 * @param Player     $player
+	 * @param            $message
+	 * @param string     $format
+	 * @param array|null $recipients
+	 */
 	public function __construct(Player $player, $message, $format = "chat.type.text", array $recipients = null){
 		$this->player = $player;
 		$this->message = $message;
@@ -56,10 +63,16 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable{
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getMessage(){
 		return $this->message;
 	}
 
+	/**
+	 * @param $message
+	 */
 	public function setMessage($message){
 		$this->message = $message;
 	}
@@ -73,27 +86,31 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable{
 		$this->player = $player;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFormat(){
 		return $this->format;
 	}
 
+	/**
+	 * @param $format
+	 */
 	public function setFormat($format){
 		$this->format = $format;
 	}
 
+	/**
+	 * @return array|Player[]
+	 */
 	public function getRecipients(){
 		return $this->recipients;
 	}
 
+	/**
+	 * @param array $recipients
+	 */
 	public function setRecipients(array $recipients){
 		$this->recipients = $recipients;
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "PlayerChatEvent";
-	}
-
 }

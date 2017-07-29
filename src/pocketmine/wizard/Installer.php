@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- * 
+ *
  *
 */
 
@@ -23,12 +23,13 @@
  * Set-up wizard used on the first run
  * Can be disabled with --no-wizard
  */
+
 namespace pocketmine\wizard;
 
 use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 
-class Installer{
+class Installer {
 	const DEFAULT_NAME = "Minecraft: PE Server";
 	const DEFAULT_PORT = 19132;
 	const DEFAULT_MEMORY = 512;
@@ -36,7 +37,7 @@ class Installer{
 	const DEFAULT_GAMEMODE = 0;
 	const DEFAULT_LEVEL_NAME = "world";
 	const DEFAULT_LEVEL_TYPE = "DEFAULT";
-	
+
 	const LEVEL_TYPES = [
 		"DEFAULT",
 		"FLAT",
@@ -48,17 +49,27 @@ class Installer{
 
 	private $defaultLang;
 
+	/**
+	 * Installer constructor.
+	 */
 	public function __construct(){
-		echo "[*] 正在为GenisysPlus做首次运行的准备\n";
-		echo "[*] 请选择语言:\n";
+
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function run(){
+		echo "[*] 正在为第一次运行GenisysPlus做准备\n";
+		echo "[*] 请选择一个语言:\n";
 		foreach(InstallerLang::$languages as $short => $native){
 			echo " $native => $short\n";
 		}
 		do{
-			echo "[?] 设定语言 (chs): ";
+			echo "[?] 语言 (默认中文chs): ";
 			$lang = strtolower($this->getInput("chs"));
 			if(!isset(InstallerLang::$languages[$lang])){
-				echo "[!] 找不到这个语言，请重新选择\n";
+				echo "[!] 无法找到这个语言文件，请检查是否有误\n";
 				$lang = false;
 			}
 			$this->defaultLang = $lang;
@@ -66,16 +77,17 @@ class Installer{
 		$this->lang = new InstallerLang($lang);
 
 
-		echo "[*] " . $this->lang->language_has_been_selected . "\n";
+		echo "[*] " . $this->lang->get("language_has_been_selected") . "\n";
+
+		$this->relayLangSetting();
 
 		if(!$this->showLicense()){
-			@\pocketmine\kill(getmypid());
-			exit(-1);
+			return false;
 		}
 
-		echo "[?] " . $this->lang->skip_installer . " (y/N): ";
+		echo "[?] " . $this->lang->get("skip_installer") . " (y/N): ";
 		if(strtolower($this->getInput()) === "y"){
-			return;
+			return true;
 		}
 		echo "\n";
 		$this->welcome();
@@ -85,12 +97,16 @@ class Installer{
 		$this->networkFunctions();
 
 		$this->endWizard();
+		return true;
 	}
 
 	public function getDefaultLang(){
 		return $this->defaultLang;
 	}
 
+	/**
+	 * @return bool
+	 */
 	private function showLicense(){
 		echo $this->lang->welcome_to_pocketmine . "\n";
 		echo <<<LICENSE
@@ -124,7 +140,7 @@ LICENSE;
 		echo "[?] " . $this->lang->name_your_server . " (" . self::DEFAULT_NAME . "): ";
 		$server_name = $this->getInput(self::DEFAULT_NAME);
 		$config->set("server-name", $server_name);
-		$config->set("motd", $server_name);
+		$config->set("motd", $server_name); //MOTD is now used as server name
 		echo "[*] " . $this->lang->port_warning . "\n";
 		do{
 			echo "[?] " . $this->lang->server_port . " (" . self::DEFAULT_PORT . "): ";
@@ -134,14 +150,14 @@ LICENSE;
 			}
 		}while($port <= 0 or $port > 65535);
 		$config->set("server-port", $port);
-		
+
 		echo "[*] " . $this->lang->online_mode_info . "\n";
 		echo "[?] " . $this->lang->online_mode . " (y/N): ";
 		$config->set("online-mode", strtolower($this->getInput("y")) == "y");
-		
+
 		echo "[?] " . $this->lang->level_name . " (" . self::DEFAULT_LEVEL_NAME . "): ";
 		$config->set("level-name", $this->getInput(self::DEFAULT_LEVEL_NAME));
-		
+
 		do{
 			echo "[?] " . $this->lang->level_type . " (" . self::DEFAULT_LEVEL_TYPE . "): ";
 			$type = strtoupper((string) $this->getInput(self::DEFAULT_LEVEL_TYPE));
@@ -151,6 +167,9 @@ LICENSE;
 		}while(!in_array($type, self::LEVEL_TYPES));
 		$config->set("level-type", $type);
 
+		/*echo "[*] " . $this->lang->ram_warning . "\n";
+		echo "[?] " . $this->lang->server_ram . " (" . self::DEFAULT_MEMORY . "): ";
+		$config->set("memory-limit", ((int) $this->getInput(self::DEFAULT_MEMORY)) . "M");*/
 		echo "[*] " . $this->lang->gamemode_info . "\n";
 		do{
 			echo "[?] " . $this->lang->default_gamemode . ": (" . self::DEFAULT_GAMEMODE . "): ";
@@ -166,7 +185,7 @@ LICENSE;
 		}else{
 			$config->set("spawn-protection", 16);
 		}
-		
+
 		echo "[?] " . $this->lang->announce_player_achievements . " (y/N): ";
 		if(strtolower($this->getInput("n")) === "y"){
 			$config->set("announce-player-achievements", "on");
@@ -221,6 +240,13 @@ LICENSE;
 			$config->set("enable-rcon", false);
 		}
 
+		/*echo "[*] " . $this->lang->usage_info . "\n";
+		echo "[?] " . $this->lang->usage_disable . " (y/N): ";
+		if(strtolower($this->getInput("n")) === "y"){
+			$config->set("send-usage", false);
+		}else{
+			$config->set("send-usage", true);
+		}*/
 		$config->save();
 
 
@@ -234,12 +260,27 @@ LICENSE;
 		$this->getInput();
 	}
 
+	private function relayLangSetting(){
+		if(file_exists(\pocketmine\DATA . "lang.txt")){
+			unlink(\pocketmine\DATA . "lang.txt");
+		}
+		$langFile = new Config(\pocketmine\DATA . "lang.txt", Config::ENUM);
+		$langFile->set($this->defaultLang, true);
+		$langFile->save();
+	}
+
 	private function endWizard(){
 		echo "[*] " . $this->lang->you_have_finished . "\n";
+		echo "[*] " . $this->lang->pocketmine_plugins . "\n";
 		echo "[*] " . $this->lang->pocketmine_will_start . "\n\n\n";
 		sleep(4);
 	}
 
+	/**
+	 * @param string $default
+	 *
+	 * @return string
+	 */
 	private function getInput($default = ""){
 		$input = trim(fgets(STDIN));
 

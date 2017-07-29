@@ -22,7 +22,7 @@
 namespace pocketmine\command;
 
 
-interface CommandMap{
+interface CommandMap {
 
 	/**
 	 * @param string    $fallbackPrefix
@@ -41,7 +41,7 @@ interface CommandMap{
 	 * @param CommandSender $sender
 	 * @param string        $cmdLine
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function dispatch(CommandSender $sender, $cmdLine);
 

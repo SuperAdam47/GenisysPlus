@@ -22,6 +22,7 @@
 /**
  * Command handling related classes
  */
+
 namespace pocketmine\command;
 
 use pocketmine\event\TextContainer;
@@ -31,13 +32,13 @@ use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
-abstract class Command{
-	/** @var array */
+abstract class Command {
+	/** @var \stdClass */
 	private static $defaultDataTemplate = null;
 
 	/** @var string */
 	private $name;
-	/** @var array */
+	/** @var \stdClass */
 	protected $commandData = null;
 
 	/** @var string */
@@ -45,6 +46,11 @@ abstract class Command{
 
 	/** @var string */
 	private $label;
+
+	/**
+	 * @var string[]
+	 */
+	private $aliases = [];
 
 	/**
 	 * @var string[]
@@ -74,19 +80,19 @@ abstract class Command{
 	 */
 	public function __construct($name, $description = "", $usageMessage = null, array $aliases = []){
 		$this->commandData = self::generateDefaultData();
-		$this->name = $name;
-		$this->setLabel($name);
+		$this->name = $this->nextLabel = $this->label = $name;
 		$this->setDescription($description);
 		$this->usageMessage = $usageMessage === null ? "/" . $name : $usageMessage;
 		$this->setAliases($aliases);
+		$this->timings = new TimingsHandler("** Command: " . $name);
 	}
 
 	/**
-	 * Returns an array containing command data
+	 * Returns an \stdClass containing command data
 	 *
-	 * @return array
+	 * @return \stdClass
 	 */
-	public function getDefaultCommandData() : array{
+	public function getDefaultCommandData() : \stdClass{
 		return $this->commandData;
 	}
 
@@ -96,25 +102,28 @@ abstract class Command{
 	 *
 	 * @param Player $player
 	 *
-	 * @return array
+	 * @return \stdClass|null
 	 */
 	public function generateCustomCommandData(Player $player){
 		//TODO: fix command permission filtering on join
 		/*if(!$this->testPermissionSilent($player)){
 			return null;
 		}*/
-		$customData = $this->commandData;
-		$customData["aliases"] = $this->getAliases();
-		/*foreach($customData["overloads"] as $overloadName => $overload){
-			if(isset($overload["pocketminePermission"]) and !$player->hasPermission($overload["pocketminePermission"])){
-				unset($customData["overloads"][$overloadName]);
+		$customData = clone $this->commandData;
+		$customData->aliases = $this->getAliases();
+		/*foreach($customData->overloads as &$overload){
+			if(isset($overload->pocketminePermission) and !$player->hasPermission($overload->pocketminePermission)){
+				unset($overload);
 			}
 		}*/
 		return $customData;
 	}
 
-	public function getOverloads(): array {
-		return $this->commandData["overloads"];
+	/**
+	 * @return \stdClass
+	 */
+	public function getOverloads() : \stdClass{
+		return $this->commandData->overloads;
 	}
 
 	/**
@@ -137,7 +146,7 @@ abstract class Command{
 	 * @return string
 	 */
 	public function getPermission(){
-		return $this->commandData["pocketminePermission"] ?? null;
+		return $this->commandData->pocketminePermission ?? null;
 	}
 
 
@@ -146,12 +155,11 @@ abstract class Command{
 	 */
 	public function setPermission($permission){
 		if($permission !== null){
-			$this->commandData["pocketminePermission"] = $permission;
+			$this->commandData->pocketminePermission = $permission;
 		}else{
-			unset($this->commandData["pocketminePermission"]);
+			unset($this->commandData->pocketminePermission);
 		}
 	}
-
 
 	/**
 	 * @param CommandSender $target
@@ -191,7 +199,6 @@ abstract class Command{
 		return false;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -199,12 +206,14 @@ abstract class Command{
 		return $this->label;
 	}
 
+	/**
+	 * @param $name
+	 *
+	 * @return bool
+	 */
 	public function setLabel($name){
 		$this->nextLabel = $name;
 		if(!$this->isRegistered()){
-			if($this->timings instanceof TimingsHandler){
-				$this->timings->remove();
-			}
 			$this->timings = new TimingsHandler("** Command: " . $name);
 			$this->label = $name;
 
@@ -239,7 +248,7 @@ abstract class Command{
 	public function unregister(CommandMap $commandMap){
 		if($this->allowChangesFrom($commandMap)){
 			$this->commandMap = null;
-			$this->activeAliases = $this->commandData["aliases"];
+			$this->activeAliases = $this->commandData->aliases;
 			$this->label = $this->nextLabel;
 
 			return true;
@@ -282,7 +291,7 @@ abstract class Command{
 	 * @return string
 	 */
 	public function getDescription(){
-		return $this->commandData["description"];
+		return $this->commandData->description;
 	}
 
 	/**
@@ -296,7 +305,7 @@ abstract class Command{
 	 * @param string[] $aliases
 	 */
 	public function setAliases(array $aliases){
-		$this->commandData["aliases"] = $aliases;
+		$this->commandData->aliases = $aliases;
 		if(!$this->isRegistered()){
 			$this->activeAliases = (array) $aliases;
 		}
@@ -306,7 +315,7 @@ abstract class Command{
 	 * @param string $description
 	 */
 	public function setDescription($description){
-		$this->commandData["description"] = $description;
+		$this->commandData->description = $description;
 	}
 
 	/**
@@ -324,13 +333,13 @@ abstract class Command{
 	}
 
 	/**
-	 * @return array
+	 * @return \stdClass
 	 */
-	public static final function generateDefaultData() : array{
+	public static final function generateDefaultData() : \stdClass{
 		if(self::$defaultDataTemplate === null){
-			self::$defaultDataTemplate = json_decode(file_get_contents(Server::getInstance()->getFilePath() . "src/pocketmine/resources/command_default.json"), true);
+			self::$defaultDataTemplate = json_decode(file_get_contents(Server::getInstance()->getFilePath() . "src/pocketmine/resources/command_default.json"));
 		}
-		return self::$defaultDataTemplate;
+		return clone self::$defaultDataTemplate;
 	}
 
 	/**
@@ -341,7 +350,7 @@ abstract class Command{
 	public static function broadcastCommandMessage(CommandSender $source, $message, $sendToSource = true){
 		if($message instanceof TextContainer){
 			$m = clone $message;
-			$result = "[".$source->getName().": ".($source->getServer()->getLanguage()->get($m->getText()) !== $m->getText() ? "%" : "") . $m->getText() ."]";
+			$result = "[" . $source->getName() . ": " . ($source->getServer()->getLanguage()->get($m->getText()) !== $m->getText() ? "%" : "") . $m->getText() . "]";
 
 			$users = $source->getServer()->getPluginManager()->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_ADMINISTRATIVE);
 			$colored = TextFormat::GRAY . TextFormat::ITALIC . $result;

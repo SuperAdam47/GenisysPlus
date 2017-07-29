@@ -22,16 +22,22 @@
 /**
  * Inventory related events
  */
+
 namespace pocketmine\event\inventory;
 
 use pocketmine\event\Event;
 use pocketmine\inventory\Inventory;
 
-abstract class InventoryEvent extends Event{
+abstract class InventoryEvent extends Event {
 
 	/** @var Inventory */
 	protected $inventory;
 
+	/**
+	 * InventoryEvent constructor.
+	 *
+	 * @param Inventory $inventory
+	 */
 	public function __construct(Inventory $inventory){
 		$this->inventory = $inventory;
 	}
@@ -49,12 +55,4 @@ abstract class InventoryEvent extends Event{
 	public function getViewers(){
 		return $this->inventory->getViewers();
 	}
-
-	/**
-	 * @return EventName|string
-     */
-	public function getName(){
-		return "InventoryEvent";
-	}
-
 }

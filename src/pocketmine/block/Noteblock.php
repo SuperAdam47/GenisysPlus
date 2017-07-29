@@ -21,35 +21,55 @@
 
 namespace pocketmine\block;
 
-use pocketmine\item\Tool;
 use pocketmine\item\Item;
+use pocketmine\item\Tool;
+use pocketmine\level\sound\NoteblockSound;
 use pocketmine\math\Vector3;
-use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
 
-class Noteblock extends Solid{
+class Noteblock extends Solid implements ElectricalAppliance {
 	protected $id = self::NOTEBLOCK;
 
+	/**
+	 * Noteblock constructor.
+	 *
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return float
+	 */
 	public function getHardness(){
 		return 0.8;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getResistance(){
 		return 4;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_AXE;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeActivated() : bool{
 		return true;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getStrength(){
 		if($this->meta < 24) $this->meta++;
 		else $this->meta = 0;
@@ -57,6 +77,9 @@ class Noteblock extends Solid{
 		return $this->meta * 1;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getInstrument(){
 		$below = $this->getSide(Vector3::SIDE_DOWN);
 		switch($below->getId()){
@@ -86,13 +109,13 @@ class Noteblock extends Solid{
 			case Block::WALL_SIGN:
 			case Block::DOOR_BLOCK:
 			case Block::NOTEBLOCK:
-				//return NoteblockSound::INSTRUMENT_BASS;
+				return NoteblockSound::INSTRUMENT_BASS;
 			case Block::SAND:
 			case Block::SOUL_SAND:
-				//return NoteblockSound::INSTRUMENT_TABOUR;
+				return NoteblockSound::INSTRUMENT_TABOUR;
 			case Block::GLASS:
 			case Block::GLASS_PANE:
-				//return NoteblockSound::INSTRUMENT_CLICK;
+				return NoteblockSound::INSTRUMENT_CLICK;
 			case Block::STONE:
 			case Block::COBBLESTONE:
 			case Block::SANDSTONE:
@@ -128,21 +151,30 @@ class Noteblock extends Solid{
 			case Block::END_STONE:
 			case Block::STAINED_CLAY:
 			case Block::COAL_BLOCK:
-				//return NoteblockSound::INSTRUMENT_BASS_DRUM;
+				return NoteblockSound::INSTRUMENT_BASS_DRUM;
 		}
-		//return NoteblockSound::INSTRUMENT_PIANO;
+		return NoteblockSound::INSTRUMENT_PIANO;
 	}
 
+	/**
+	 * @param Item        $item
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null){
 		$up = $this->getSide(Vector3::SIDE_UP);
 		if($up->getId() == 0){
-			$this->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_NOTE);
+			$this->getLevel()->addSound(new NoteblockSound($this, $this->getInstrument(), $this->getStrength()));
 			return true;
 		}else{
 			return false;
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return "Noteblock";
 	}

@@ -21,13 +21,19 @@
 
 namespace pocketmine\block;
 
-class UnknownBlock extends Solid{
+class UnknownBlock extends Transparent {
 
-    public function isSolid(){
-        return false;
-    }
+	/**
+	 * @return bool
+	 */
+	public function isSolid(){
+		return false;
+	}
 
-    public function getHardness(){
-        return 0;
-    }
+	/**
+	 * @return int
+	 */
+	public function getHardness(){
+		return 0;
+	}
 }

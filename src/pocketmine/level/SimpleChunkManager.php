@@ -27,7 +27,7 @@ use pocketmine\block\Block;
 use pocketmine\level\format\Chunk;
 use pocketmine\math\Vector3;
 
-class SimpleChunkManager implements ChunkManager{
+class SimpleChunkManager implements ChunkManager {
 
 	/** @var Chunk[] */
 	protected $chunks = [];
@@ -35,11 +35,20 @@ class SimpleChunkManager implements ChunkManager{
 	protected $seed;
 	protected $waterHeight = 0;
 
+	/**
+	 * SimpleChunkManager constructor.
+	 *
+	 * @param     $seed
+	 * @param int $waterHeight
+	 */
 	public function __construct($seed, $waterHeight = 0){
 		$this->seed = $seed;
 		$this->waterHeight = $waterHeight;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getWaterHeight() : int{
 		return $this->waterHeight;
 	}
@@ -55,7 +64,7 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function getBlockIdAt(int $x, int $y, int $z) : int{
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			return $chunk->getBlockId($x & 0xf, $y, $z & 0xf);
+			return $chunk->getBlockId($x & 0xf, $y & Level::Y_MASK, $z & 0xf);
 		}
 		return 0;
 	}
@@ -70,7 +79,7 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function setBlockIdAt(int $x, int $y, int $z, int $id){
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			$chunk->setBlockId($x & 0xf, $y, $z & 0xf, $id);
+			$chunk->setBlockId($x & 0xf, $y & Level::Y_MASK, $z & 0xf, $id);
 		}
 	}
 
@@ -85,7 +94,7 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function getBlockDataAt(int $x, int $y, int $z) : int{
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			return $chunk->getBlockData($x & 0xf, $y, $z & 0xf);
+			return $chunk->getBlockData($x & 0xf, $y & Level::Y_MASK, $z & 0xf);
 		}
 		return 0;
 	}
@@ -100,7 +109,7 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function setBlockDataAt(int $x, int $y, int $z, int $data){
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			$chunk->setBlockData($x & 0xf, $y, $z & 0xf, $data);
+			$chunk->setBlockData($x & 0xf, $y & Level::Y_MASK, $z & 0xf, $data);
 		}
 	}
 
@@ -115,7 +124,7 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function getBlockLightAt(int $x, int $y, int $z) : int{
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			return $chunk->getBlockLight($x & 0xf, $y, $z & 0xf);
+			return $chunk->getBlockLight($x & 0x0f, $y & 0x7f, $z & 0x0f);
 		}
 		return 0;
 	}
@@ -130,26 +139,13 @@ class SimpleChunkManager implements ChunkManager{
 	 */
 	public function setBlockLightAt(int $x, int $y, int $z, int $level){
 		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			$chunk->setBlockLight($x & 0xf, $y, $z & 0xf, $level);
-		}
-	}
-
-	public function getBlockSkyLightAt(int $x, int $y, int $z) : int{
-		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			return $chunk->getBlockSkyLight($x & 0xf, $y, $z & 0xf);
-		}
-		return 0;
-	}
-
-	public function setBlockSkyLightAt(int $x, int $y, int $z, int $level){
-		if($chunk = $this->getChunk($x >> 4, $z >> 4)){
-			$chunk->setBlockSkyLight($x & 0xf, $y, $z & 0xf, $level);
+			$chunk->setBlockLight($x & 0x0f, $y & 0x7f, $z & 0x0f, $level & 0x0f);
 		}
 	}
 
 	/**
 	 * Updates the light around the block
-	 * 
+	 *
 	 * @param $x
 	 * @param $y
 	 * @param $z
@@ -206,6 +202,16 @@ class SimpleChunkManager implements ChunkManager{
 		}
 	}
 
+	/**
+	 * @param           $x
+	 * @param           $y
+	 * @param           $z
+	 * @param           $currentLight
+	 * @param \SplQueue $queue
+	 * @param \SplQueue $spreadQueue
+	 * @param array     $visited
+	 * @param array     $spreadVisited
+	 */
 	private function computeRemoveBlockLight($x, $y, $z, $currentLight, \SplQueue $queue, \SplQueue $spreadQueue, array &$visited, array &$spreadVisited){
 		$current = $this->getBlockLightAt($x, $y, $z);
 
@@ -226,6 +232,14 @@ class SimpleChunkManager implements ChunkManager{
 		}
 	}
 
+	/**
+	 * @param           $x
+	 * @param           $y
+	 * @param           $z
+	 * @param           $currentLight
+	 * @param \SplQueue $queue
+	 * @param array     $visited
+	 */
 	private function computeSpreadBlockLight($x, $y, $z, $currentLight, \SplQueue $queue, array &$visited){
 		$current = $this->getBlockLightAt($x, $y, $z);
 

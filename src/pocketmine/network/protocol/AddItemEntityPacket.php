@@ -24,7 +24,7 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class AddItemEntityPacket extends DataPacket{
+class AddItemEntityPacket extends DataPacket {
 
 	const NETWORK_ID = Info::ADD_ITEM_ENTITY_PACKET;
 
@@ -36,12 +36,17 @@ class AddItemEntityPacket extends DataPacket{
 	public $speedX;
 	public $speedY;
 	public $speedZ;
-	public $metadata = [];
 
+	/**
+	 *
+	 */
 	public function decode(){
 
 	}
 
+	/**
+	 *
+	 */
 	public function encode(){
 		$this->reset();
 		$this->putEntityId($this->eid); //EntityUniqueID
@@ -49,7 +54,13 @@ class AddItemEntityPacket extends DataPacket{
 		$this->putSlot($this->item);
 		$this->putVector3f($this->x, $this->y, $this->z);
 		$this->putVector3f($this->speedX, $this->speedY, $this->speedZ);
-		$this->putEntityMetadata($this->metadata);
+	}
+
+	/**
+	 * @return AddItemEntityPacket|string
+	 */
+	public function getName(){
+		return "AddItemEntityPacket";
 	}
 
 }

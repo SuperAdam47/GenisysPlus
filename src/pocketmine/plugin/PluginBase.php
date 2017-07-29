@@ -27,7 +27,7 @@ use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 
-abstract class PluginBase implements Plugin{
+abstract class PluginBase implements Plugin {
 
 	/** @var PluginLoader */
 	private $loader;
@@ -97,14 +97,27 @@ abstract class PluginBase implements Plugin{
 		return $this->isEnabled === false;
 	}
 
+	/**
+	 * @return string
+	 */
 	public final function getDataFolder(){
 		return $this->dataFolder;
 	}
 
+	/**
+	 * @return PluginDescription
+	 */
 	public final function getDescription(){
 		return $this->description;
 	}
 
+	/**
+	 * @param PluginLoader      $loader
+	 * @param Server            $server
+	 * @param PluginDescription $description
+	 * @param                   $dataFolder
+	 * @param                   $file
+	 */
 	public final function init(PluginLoader $loader, Server $server, PluginDescription $description, $dataFolder, $file){
 		if($this->initialized === false){
 			$this->initialized = true;
@@ -217,7 +230,7 @@ abstract class PluginBase implements Plugin{
 	}
 
 	/**
-	 * Returns all the resources incrusted on the plugin
+	 * Returns all the resources packaged with the plugin
 	 *
 	 * @return string[]
 	 */
@@ -243,22 +256,31 @@ abstract class PluginBase implements Plugin{
 		return $this->config;
 	}
 
+	/**
+	 *
+	 */
 	public function saveConfig(){
 		if($this->getConfig()->save() === false){
 			$this->getLogger()->critical("Could not save config to " . $this->configFile);
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function saveDefaultConfig(){
 		if(!file_exists($this->configFile)){
 			$this->saveResource("config.yml", false);
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function reloadConfig(){
 		$this->config = new Config($this->configFile);
 		if(($configStream = $this->getResource("config.yml")) !== null){
-			$this->config->setDefaults(yaml_parse(config::fixYAMLIndexes(stream_get_contents($configStream))));
+			$this->config->setDefaults(yaml_parse(Config::fixYAMLIndexes(stream_get_contents($configStream))));
 			fclose($configStream);
 		}
 	}
@@ -284,6 +306,9 @@ abstract class PluginBase implements Plugin{
 		return $this->description->getFullName();
 	}
 
+	/**
+	 * @return mixed
+	 */
 	protected function getFile(){
 		return $this->file;
 	}
