@@ -15,7 +15,7 @@ _欢迎到我们的服务器参观_
 _GenisysPlus官方推荐面板_
 --------------------------
 
-![Yongcheng interconnection](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Yongcheng_interconnection.jpg)
+![Yongcheng interconnection](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Yongcheng_interconnection.jpg)</br>
 永成互联，E5至强主机。租服赠送插件、地图。</br>
 
 采用佛山顺德机房，流畅性与稳定性有着绝对的保证。</br>
