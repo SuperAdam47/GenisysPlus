@@ -16,11 +16,18 @@ _GenisysPlus官方推荐面板_
 --------------------------
 
 ![Yongcheng interconnection](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Yongcheng_interconnection.jpg)
-##永成互联，E5至强主机。租服赠送插件、地图。采用佛山顺德机房，流畅性与稳定性有着绝对的保证。
-##永成互联客户服务中心：
-##http://www.amywg.com/index.php/buy/index
-###不仅仅有面板，还有VPS虚拟空间等。
-###详询QQ:1798471966
+永成互联，E5至强主机。租服赠送插件、地图。</br>
+
+采用佛山顺德机房，流畅性与稳定性有着绝对的保证。</br>
+
+永成互联官方有引导页：</br>
+
+http://z6mc.cn/</br>
+
+不仅仅有面板，还有VPS虚拟空间等。</br>
+
+详询QQ:1798471966</br>
+
 
 _本次更新_
 -----------
