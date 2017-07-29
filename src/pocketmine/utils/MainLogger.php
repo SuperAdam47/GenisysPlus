@@ -257,9 +257,9 @@ class MainLogger extends \AttachableThreadedLogger {
 		if($thread === null){
 			$threadName = "服务器主线程";
 		}elseif($thread instanceof Thread or $thread instanceof Worker){
-			$threadName = $thread->getThreadName() . " thread";
+			$threadName = $thread->getThreadName() . " 进程";
 		}else{
-			$threadName = (new \ReflectionClass($thread))->getShortName() . " thread";
+			$threadName = (new \ReflectionClass($thread))->getShortName() . " 进程";
 		}
 
 		if($this->shouldRecordMsg){
@@ -270,7 +270,7 @@ class MainLogger extends \AttachableThreadedLogger {
 			}
 		}
 
-		$message = TextFormat::toANSI(TextFormat::AQUA . "[永成互联] " . TextFormat::RESET . $color . "[" . $threadName . "/" . $prefix . "]:" . " " . $message . TextFormat::RESET);
+		$message = TextFormat::toANSI(TextFormat::AQUA . "[GenisysPlus] " . TextFormat::RESET . $color . "[" . $threadName . "/" . $prefix . "]:" . " " . $message . TextFormat::RESET);
 		//$message = TextFormat::toANSI(TextFormat::AQUA . "[GenisysPlus]->[" . date("H:i:s", $now) . "] " . TextFormat::RESET . $color . "[$prefix]:" . " " . $message . TextFormat::RESET);
 		//$message = TextFormat::toANSI(TextFormat::AQUA . "[" . date("H:i:s") . "] ". TextFormat::RESET . $color ."<".$prefix . ">" . " " . $message . TextFormat::RESET);
 		$cleanMessage = TextFormat::clean($message);

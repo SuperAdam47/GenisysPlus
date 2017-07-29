@@ -4,7 +4,6 @@
 
 #主设置
 settings:
- #Three-letter language code for server-side localization
  #请确认你的语言文件是在https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes下载的
  language: "chs"
  #是否将客户端的发送所有字符串都转换为服务器的区域设置？如果否，将会把这项工作交给客户端处理

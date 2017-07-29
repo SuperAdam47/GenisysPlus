@@ -1717,7 +1717,7 @@ class Server{
 			if(file_exists($this->filePath . "src/pocketmine/resources/GenisysPlus_$lang.yml")){
 				$content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/GenisysPlus_$lang.yml");
 			}else{
-				$content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/GenisysPlus_eng.yml");
+				$content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/GenisysPlus_chs.yml");
 			}
 
 			if(!file_exists($this->dataPath . "GenisysPlus.yml")){
