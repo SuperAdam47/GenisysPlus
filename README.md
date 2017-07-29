@@ -9,7 +9,8 @@ The Minecraft: Pocket Edition server written in PHP language
 
 
 _欢迎到我们的服务器参观_
-* z6mcpe.com /n 34601
+
+* z6mcpe.com        34601
 
 _本次更新_
 
