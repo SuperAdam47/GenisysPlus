@@ -7,6 +7,7 @@ __这是用于我的世界便携版和我的世界windows10版的服务器__
 
 The Minecraft: Pocket Edition server written in PHP language 
 
+_本次更新_
 
 GenisysPlus v0.2.3 震撼发布！
 ----------------------------
@@ -24,7 +25,7 @@ GenisysPlus v0.2.3 震撼发布！
 
 
 
-_本本更新历史_
+_版本更新历史_
 
 
 GenisysPlus v0.2.2强势插队
