@@ -1,29 +1,9 @@
-__这是用于我的世界便携版和我的世界windows10版的服务器__
+__本服务器用于我的世界便携版和我的世界windows10版__
 
 ![GenisysPlus Logo](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Logo.png)
 
 The Minecraft: Pocket Edition server written in PHP language 
 
-
-_欢迎到我们的服务器参观_
-
-* z6mcpe.com </br>  34601</br>
-
-_GenisysPlus官方推荐面板_
---------------------------
-
-![Yongcheng interconnection](https://raw.githubusercontent.com/Tcanw/GenisysPlus/master/image/Yongcheng_interconnection.jpg)</br>
-永成互联，E5至强主机。租服赠送插件、地图。</br>
-
-采用佛山顺德机房，流畅性与稳定性有着绝对的保证。</br>
-
-永成互联官方有引导页：</br>
-
-http://z6mc.cn/</br>
-
-不仅仅有面板，还有VPS虚拟空间等。</br>
-
-详询QQ:1798471966</br>
 
 
 _本次更新_
