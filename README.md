@@ -5,7 +5,7 @@ __本服务器用于我的世界便携版和我的世界windows10版__
 The Minecraft: Pocket Edition server written in PHP language 
 
 
-
+Please add english version or turkish version
 _本次更新_
 -----------
 
